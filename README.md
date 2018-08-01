@@ -71,16 +71,6 @@ The widget generator will include a **Gulpfile.js** and the necessary package.js
 
 Earlier versions of the widget generator added Grunt as the default taskrunner. We included this option as well if you want to use this.
 
-### 3.2. Which template do you want to use?
-
-#### AppStoreWidgetBoilerplate
-
-This uses the standard boilerplate which is on Github. This is recommended if you are a beginner. It includes example code with jQuery* and templates.
-
-#### Empty widget
-
-The empty widget will use a slim version of the AppStoreWidgetBoilerplate. It only provides the essential methods and setup. Furthermore, it will ask you if you want to use templates and jQuery*.
-
 \* **We do not recommend using jQuery in your widgets, please [read this issue](https://github.com/mendix/AppStoreWidgetBoilerplate/issues/38). For simple DOM-manipulation you can use Dojo, which is provided by Mendix. Only use jQuery when you need it for certain external libraries that depend on it.**
 
 ---
