@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="com.mendix.widget.custom.packageName.WidgetName" needsEntityContext="true" offlineCapable="true" xmlns="http://www.mendix.com/widget/1.0/">
+    <name>Sample attribute</name>
+    <description>Sample description</description>
+    <icon/>
+    <properties>
+        <property key="sampleAttribute" required="false" type="attribute">
+            <caption>Sample attribute</caption>
+            <category>Data source</category>
+            <description>Sample attribute description</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
+    </properties>
+</widget>
