@@ -23,7 +23,7 @@ function promptsNew() {
     type: "input",
     name: "copyright",
     message: "Add a copyright",
-    default: "FOB 2018",
+    default: "Flock of birds",
     store: true
   },
   {
@@ -49,7 +49,7 @@ function promptsNew() {
     type: "input",
     name: "author",
     message: "Author",
-    default: "Joseph",
+    default: "Flock of birds",
     store: true
   },
   {

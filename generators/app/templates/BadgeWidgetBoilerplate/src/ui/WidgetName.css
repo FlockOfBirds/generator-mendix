@@ -1,24 +1,24 @@
-.widget-packageName-clickable {
-  cursor: pointer;
+.widget-badge-clickable {
+    cursor: pointer;
 }
 
-.widget-packageName {
-  display: inline-block;
+.widget-badge {
+    display: inline-block;
 }
 
-.widget-packageName.packageName:empty {
-  display: initial;
-  /* Fix padding to stay round */
-  padding: 3px 10px;
+.widget-badge.badge:empty {
+    display: initial;
+    /* Fix padding to stay round */
+    padding: 3px 10px;
 }
 
-.widget-packageName.label:empty {
-  display: initial;
-  /* Fix padding to stay square */
-  padding: .2em .8em .3em;
+.widget-badge.label:empty {
+    display: initial;
+    /* Fix padding to stay square */
+    padding: .2em .8em .3em;
 }
 
-.widget-packageName.packageName {
-  min-width: 18px;
-  min-height: 18px;
+.widget-badge.badge {
+    min-width: 18px;
+    min-height: 18px;
 }

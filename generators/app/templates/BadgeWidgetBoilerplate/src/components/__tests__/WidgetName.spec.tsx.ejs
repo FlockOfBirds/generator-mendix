@@ -1,0 +1,105 @@
+import { shallow } from "enzyme";
+import { createElement } from "react";
+
+import { WidgetName, WidgetNameProps } from "../WidgetName";
+
+describe("WidgetName", () => {
+    const createWidgetName = (props: WidgetNameProps) => shallow(createElement(WidgetName, props));
+
+    it("should render the structure", () => {
+        const packageNameProps: WidgetNameProps = {
+            packageNameType: "packageName",
+            bootstrapStyle: "default",
+            onClickAction: jasmine.createSpy("onClick"),
+            value: "0"
+        };
+        const packageName = createWidgetName(packageNameProps);
+
+        expect(packageName).toBeElement(
+            createElement("span",
+                {
+                    className: ("widget-packageName packageName label-default"),
+                    onClick: jasmine.any(Function) as any,
+                    style: packageNameProps.style
+                }, jasmine.any(String))
+        );
+    });
+
+    it("should show no value when no value or default value provided", () => {
+        const value = "value";
+        const packageName = createWidgetName({ packageNameType: "label", value, defaultValue: "default value" });
+
+        expect(packageName.text()).toBe(value);
+    });
+
+    it("should show default value when no value is provided", () => {
+        const defaultValue = "default";
+        const packageName = createWidgetName({ packageNameType: "label", value: undefined, defaultValue });
+
+        expect(packageName.text()).toBe(defaultValue);
+    });
+
+    it("should show no value when no value or default value provided", () => {
+        const packageName = createWidgetName({ packageNameType: "label", value: undefined });
+
+        expect(packageName.text()).toBe("");
+    });
+
+    it("configured as a label should have the class label", () => {
+        const packageName = createWidgetName({ packageNameType: "label" });
+
+        expect(packageName.hasClass("label")).toBe(true);
+    });
+
+    it("configured as a packageName should have the class packageName", () => {
+        const packageName = createWidgetName({ packageNameType: "packageName" });
+
+        expect(packageName.hasClass("packageName")).toBe(true);
+    });
+
+    it("with a click action should respond to click events", () => {
+        const packageNameProps: WidgetNameProps = { onClickAction: jasmine.createSpy("onClick"), packageNameType: "packageName" };
+        const onClick = packageNameProps.onClickAction = jasmine.createSpy("onClick");
+        const packageName = createWidgetName(packageNameProps);
+
+        packageName.simulate("click");
+
+        expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it("with the Bootstrap style default should have the class label-default", () => {
+        const packageName = createWidgetName({ bootstrapStyle: "default", packageNameType: "packageName" });
+
+        expect(packageName.hasClass("label-default")).toBe(true);
+    });
+
+    it("with the Bootstrap style primary should have the class label-primary", () => {
+        const packageName = createWidgetName({ bootstrapStyle: "primary", packageNameType: "packageName" });
+
+        expect(packageName.hasClass("label-primary")).toBe(true);
+    });
+
+    it("with the Bootstrap style success should have the class label-success", () => {
+        const packageName = createWidgetName({ bootstrapStyle: "success", packageNameType: "packageName" });
+
+        expect(packageName.hasClass("label-success")).toBe(true);
+    });
+
+    it("with the Bootstrap style info should have the class label-info", () => {
+        const packageName = createWidgetName({ bootstrapStyle: "info", packageNameType: "packageName" });
+
+        expect(packageName.hasClass("label-info")).toBe(true);
+    });
+
+    it("with the Bootstrap style warning should have the class label-warning", () => {
+        const packageName = createWidgetName({ bootstrapStyle: "warning", packageNameType: "packageName" });
+
+        expect(packageName.hasClass("label-warning")).toBe(true);
+    });
+
+    it("with the Bootstrap style danger should have the class label-danger", () => {
+        const packageName = createWidgetName({ bootstrapStyle: "danger", packageNameType: "packageName" });
+
+        expect(packageName.hasClass("label-danger")).toBe(true);
+    });
+});
