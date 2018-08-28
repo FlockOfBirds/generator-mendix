@@ -177,8 +177,7 @@ module.exports = class extends Generator {
       // Copy generic files
       genericFiles.forEach(file => {
         this.fs.copy(
-          this.templatePath(source + file.fileSource),
-          this.destinationPath(file.destination)
+          this.templatePath(source + file.fileSource), this.destinationPath(file.destination)
         );
       });
 
@@ -202,20 +201,12 @@ module.exports = class extends Generator {
       if (this.props.boilerplate !== "empty") {
         // Copy MxTestProject
         this.fs.copy(
-          this.templatePath(source + "dist/MxTestProject/Test.mpr"),
-          this.destinationPath("dist/MxTestProject/Test.mpr")
+          this.templatePath(source + "dist/MxTestProject/Test.mpr"), this.destinationPath("dist/MxTestProject/Test.mpr")
         );
 
         // Copy tests folder
         this.fs.copy(
-          this.templatePath(source + "tests/"),
-          this.destinationPath("tests/")
-        );
-
-        // Copy tests folder
-        this.fs.copy(
-          this.templatePath(source + "typings/"),
-          this.destinationPath("typings/")
+          this.templatePath(source + "typings/"), this.destinationPath("typings/")
         );
 
         // Copy unit tests based on WidgetName
@@ -237,22 +228,16 @@ module.exports = class extends Generator {
 
           this.fs.copy(
             this.templatePath(source + "src/components/__tests__/Alert.spec.ts.ejs"),
-            this.destinationPath("src/components/__tests__/Alert.spec.ts"),
-            {
-              process: function (file) {
-                return file.toString();
-              }.bind(this)
-            }
+            this.destinationPath("src/components/__tests__/Alert.spec.ts")
           );
 
           this.fs.copy(
-            this.templatePath(source + "tests/remap.js.ejs"),
-            this.destinationPath("tests/remap.js"),
-            {
-              process: function (file) {
-                return file.toString();
-              }.bind(this)
-            }
+            this.templatePath(source + "tests/remap.js.ejs"), this.destinationPath("tests/remap.js")
+          );
+
+        // Copy tests folder
+          this.fs.copy(
+            this.templatePath(source + "tests/"), this.destinationPath("tests/")
           );
         }
 
@@ -277,8 +262,7 @@ module.exports = class extends Generator {
               process: function (file) {
                 var fileText = file.toString();
                 fileText = fileText.replace(
-                  /WidgetName/g,
-                  this.widget.widgetName
+                  /WidgetName/g, this.widget.widgetName
                 );
                 return fileText;
               }.bind(this)
@@ -286,41 +270,22 @@ module.exports = class extends Generator {
           );
 
           this.fs.copy(
-            this.templatePath(source + "e2e/pages/home.page.ts.ejs"),
-            this.destinationPath("tests/e2e/pages/home.page.ts"),
-            {
-              process: function (file) {
-                return file.toString();
-              }.bind(this)
-            }
+            this.templatePath(source + "e2e/pages/home.page.ts.ejs"), this.destinationPath("tests/e2e/pages/home.page.ts")
           );
 
           this.fs.copy(
-            this.templatePath(source + "e2e/wdio.conf.js.ejs"),
-            this.destinationPath("tests/e2e/wdio.conf.js"),
-            {
-              process: function (file) {
-                return file.toString();
-              }.bind(this)
-            }
+            this.templatePath(source + "e2e/wdio.conf.js.ejs"), this.destinationPath("tests/e2e/wdio.conf.js")
           );
 
           this.fs.copy(
-            this.templatePath(source + "e2e/tsconfig.json"),
-            this.destinationPath("tests/e2e/tsconfig.json"),
-            {
-              process: function (file) {
-                return file.toString();
-              }.bind(this)
-            }
+            this.templatePath(source + "e2e/tsconfig.json"), this.destinationPath("tests/e2e/tsconfig.json")
           );
         }
       }
 
       // Rename references package.xml
       this.fs.copy(
-        this.templatePath(source + "src/package.xml"),
-        this.destinationPath("src/package.xml"),
+        this.templatePath(source + "src/package.xml"), this.destinationPath("src/package.xml"),
         {
           process: function (file) {
             let fileText = file.toString();

@@ -1,7 +1,7 @@
 import { Component, createElement } from "react";
 
-import { WidgetName, BootstrapStyle } from "./WidgetName";
 import { Alert } from "./Alert";
+import { WidgetName, BootstrapStyle } from "./WidgetName";
 
 interface WrapperProps {
     "class"?: string;
@@ -33,7 +33,7 @@ interface Nanoflow {
 }
 
 type OnClickOptions = "doNothing" | "showPage" | "callMicroflow" | "callNanoflow";
-type PageLocation = "content"| "popup" | "modal";
+type PageLocation = "content" | "popup" | "modal";
 
 export default class WidgetNameContainer extends Component<WidgetNameContainerProps, WidgetNameContainerState> {
     private subscriptionHandles: number[];
@@ -159,19 +159,19 @@ export default class WidgetNameContainer extends Component<WidgetNameContainerPr
         } else if (onClickEvent === "showPage" && page && mxObject.getGuid()) {
             window.mx.ui.openForm(page, {
                 context,
-                error: error => window.mx.ui.error(`Error while opening page ${page}: ${error.message}`),
+                error: error => window.mx.ui.error(`Error while opening page ${ page }: ${ error.message }`),
                 location: openPageAs
             });
         }
     }
 
-    public static parseStyle(style = ""): {[key: string]: string} {
+    public static parseStyle(style = ""): { [ key: string ]: string } {
         try {
-            return style.split(";").reduce<{[key: string]: string}>((styleObject, line) => {
+            return style.split(";").reduce<{ [ key: string ]: string}>((styleObject, line) => {
                 const pair = line.split(":");
                 if (pair.length === 2) {
-                    const name = pair[0].trim().replace(/(-.)/g, match => match[1].toUpperCase());
-                    styleObject[name] = pair[1].trim();
+                    const name = pair[ 0 ].trim().replace(/(-.)/g, match => match[ 1 ].toUpperCase());
+                    styleObject[ name ] = pair[ 1 ].trim();
                 }
                 return styleObject;
             }, {});

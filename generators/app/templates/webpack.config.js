@@ -14,13 +14,13 @@ const widgetConfig = {
         libraryTarget: "umd"
     },
     resolve: {
-        extensions: [".ts", ".js"],
+        extensions: [ ".ts", ".js" ],
         alias: {
             "tests": path.resolve(__dirname, "./tests")
         }
     },
     module: {
-        rules: [{
+        rules: [ {
                 test: /\.ts$/,
                 loader: "ts-loader"
             },
@@ -35,7 +35,7 @@ const widgetConfig = {
                 test: /\.scss$/,
                 loader: ExtractTextPlugin.extract({
                     fallback: "style-loader",
-                    use: [{
+                    use: [ {
                             loader: "css-loader"
                         },
                         {
@@ -48,11 +48,11 @@ const widgetConfig = {
     },
     mode: "development",
     devtool: "eval",
-    externals: ["react", "react-dom"],
+    externals: [ "react", "react-dom" ],
     plugins: [
-        new CopyWebpackPlugin([{
+        new CopyWebpackPlugin([ {
             from: "src/**/*.xml"
-        }], {
+        } ], {
             copyUnmodified: true
         }),
         new ExtractTextPlugin({

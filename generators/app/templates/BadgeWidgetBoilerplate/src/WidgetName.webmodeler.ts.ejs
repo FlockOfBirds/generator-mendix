@@ -1,12 +1,12 @@
 import { Component, createElement } from "react";
-import { WidgetName, WidgetNameProps } from "./components/WidgetName";
 import { Alert } from "./components/Alert";
+import { WidgetName, WidgetNameProps } from "./components/WidgetName";
 import WidgetNameContainer, { WidgetNameContainerProps } from "./components/WidgetNameContainer";
 
 declare function require(name: string): string;
 
 type VisibilityMap = {
-    [P in keyof WidgetNameContainerProps]: boolean;
+    [ P in keyof WidgetNameContainerProps ]: boolean;
 };
 
 // tslint:disable-next-line class-name
@@ -27,14 +27,14 @@ export class preview extends Component<WidgetNameContainerProps, {}> {
     }
 
     private transformProps(props: WidgetNameContainerProps): WidgetNameProps {
-        const valueAttribute = props.valueAttribute ? props.valueAttribute.split(".")[2] : "";
+        const valueAttribute = props.valueAttribute ? props.valueAttribute.split(".")[ 2 ] : "";
         return {
             packageNameType: props.packageNameType,
             bootstrapStyle: props.bootstrapStyle,
             className: props.class,
             clickable: false,
             style: WidgetNameContainer.parseStyle(props.style),
-            value: valueAttribute ? "[" + valueAttribute + "]" : props.packageNameValue
+            value: valueAttribute ? "[ " + valueAttribute + " ]" : props.packageNameValue
         };
     }
 }
