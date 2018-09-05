@@ -16,7 +16,7 @@
     "test:e2e": "tsc -p ./tests/e2e/tsconfig.json && wdio ./tests/e2e/wdio.conf.js",
     "test:e2e:dev": "tsc -p ./tests/e2e/tsconfig.json && set DEBUG=true&& wdio ./tests/e2e/wdio.conf.js",<% } %>
     "lint": "tslint -c tslint.json '**/*.ts' '**/*.tsx' --exclude '**/node_modules/**'",
-    "build": "grunt release",
+    "build": "grunt",
     "lint:fix": "npm run lint -- --fix"<% if (e2eTests) { %>,
     "deploy": " npm run updateProject && npm run deployApp",
     "updateProject": "node ./node_modules/mendix-widget-build-script/dist/UpdateMxProject.js",
@@ -102,8 +102,8 @@
     "wdio-jasmine-framework": "^0.3.2",
     "wdio-selenium-standalone-service": "0.0.10",
     "wdio-spec-reporter": "^0.1.4",
-    "webdriverio": "^4.12.0",
-    "webpack": "^4.8.1",<% } %>
+    "webdriverio": "^4.12.0",<% } %>
+    "webpack": "^4.8.1",
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4",

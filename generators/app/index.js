@@ -205,10 +205,12 @@ module.exports = class extends Generator {
           this.templatePath(source + "dist/MxTestProject/Test.mpr"), this.destinationPath("dist/MxTestProject/Test.mpr")
         );
 
-        // Copy tests folder
-        this.fs.copy(
-          this.templatePath(source + "tests/"), this.destinationPath("tests/")
-        );
+        if (this.widget.unitTests | this.widget.e2eTests) {
+          // Copy tests folder
+          this.fs.copy(
+            this.templatePath(source + "tests/"), this.destinationPath("tests/")
+          );
+        }
 
         // Copy tests folder
         this.fs.copy(
@@ -317,6 +319,8 @@ module.exports = class extends Generator {
     this.fs.copy(this.templatePath("tslint.json"), this.destinationPath("tslint.json"));
     // karma
     this.fs.copy(this.templatePath("karma.conf.js"), this.destinationPath("karma.conf.js"));
+    // git attribute
+    this.fs.copy(this.templatePath(".gitattributes"), this.destinationPath(".gitattributes"));
     // tsconfig
     this.fs.copy(this.templatePath("_tsconfig.json"), this.destinationPath("tsconfig.json"),
       {
@@ -327,6 +331,9 @@ module.exports = class extends Generator {
               .replace(/"mendix-client", /g, "")
               .replace(/"jasmine", /g, "")
               .replace(/"core-js"/g, "");
+          } else if (!this.widget.unitTests | !this.widget.e2eTests) {
+            fileText = fileText
+              .replace(/"jasmine", /g, "");
           }
           return fileText;
         }.bind(this)
