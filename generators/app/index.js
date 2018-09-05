@@ -202,8 +202,7 @@ module.exports = class extends Generator {
       if (this.props.boilerplate !== "empty") {
         // Copy MxTestProject
         this.fs.copy(
-          this.templatePath(source + "dist/MxTestProject/Test.mpr"),
-          this.destinationPath("dist/MxTestProject/Test.mpr")
+          this.templatePath(source + "dist/MxTestProject/Test.mpr"), this.destinationPath("dist/MxTestProject/Test.mpr")
         );
 
         // Copy tests folder
@@ -319,7 +318,20 @@ module.exports = class extends Generator {
     // karma
     this.fs.copy(this.templatePath("karma.conf.js"), this.destinationPath("karma.conf.js"));
     // tsconfig
-    this.fs.copy(this.templatePath("tsconfig.json"), this.destinationPath("tsconfig.json"));
+    this.fs.copy(this.templatePath("_tsconfig.json"), this.destinationPath("tsconfig.json"),
+      {
+        process: function (file) {
+          var fileText = file.toString();
+          if (this.props.boilerplate === "empty") {
+            fileText = fileText
+              .replace(/"mendix-client", /g, "")
+              .replace(/"jasmine", /g, "")
+              .replace(/"core-js"/g, "");
+          }
+          return fileText;
+        }.bind(this)
+      }
+    );
     // webpack
     this.fs.copy(
       this.templatePath("webpack.config.js"), this.destinationPath("webpack.config.js"),
@@ -337,7 +349,9 @@ module.exports = class extends Generator {
       extfs.removeSync(this.destinationPath("package.json"));
     } catch (e) { }
 
-    this.fs.copyTpl(this.templatePath("_package.json"), this.destinationPath("package.json"), this.widget, {});
+    const packageSourcePath = this.props.boilerplate === "empty" ? emptyBoilerplatePath + "package.json" : "_package.json";
+
+    this.fs.copyTpl(this.templatePath(packageSourcePath), this.destinationPath("package.json"), this.widget, {});
 
     // Add Gulp/Grunt/tsconfig/tslint/webpack/karma
     this.pkg = pkg;
@@ -374,7 +388,7 @@ module.exports = class extends Generator {
       this.log(text.END_NPM_NEED_INSTALL_MSG);
     } else {
       this.log(text.END_RUN_BUILD_MSG);
-      this.spawnCommand("npm", ["run", "build"]);
+      this.spawnCommand("npm", [ "run", "build" ]);
     }
   }
 };

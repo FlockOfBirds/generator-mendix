@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<widget id="com.mendix.widget.custom.packageName.WidgetName" needsEntityContext="true" offlineCapable="true" xmlns="http://www.mendix.com/widget/1.0/">
-    <name>Sample attribute</name>
+<widget id="com.mendix.widget.custom.packageName.WidgetName" needsEntityContext="false" offlineCapable="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../xsd/widget.xsd">
+    <name>WidgetName</name>
     <description>Sample description</description>
     <icon/>
     <properties>
-        <property key="sampleAttribute" required="false" type="attribute">
-            <caption>Sample attribute</caption>
-            <category>Data source</category>
-            <description>Sample attribute description</description>
-            <attributeTypes>
-                <attributeType name="String"/>
-            </attributeTypes>
+        <property key="sampleText" type="translatableString" required="false">
+            <caption>Default value</caption>
+            <category>General</category>
+            <description>Sample text input</description>
+            <translations>
+                <translation lang="en_US">text</translation>
+                <translation lang="nl_NL">tekst</translation>
+            </translations>
         </property>
     </properties>
 </widget>

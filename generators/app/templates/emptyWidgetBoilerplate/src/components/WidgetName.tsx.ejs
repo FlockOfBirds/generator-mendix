@@ -1,7 +1,14 @@
 import * as React from "react";
+import { createElement } from 'react';
 
-export class WidgetName extends React.Component<{}, {}> {
-    render() {
-        return <div/>;
-    }
+export interface WidgetNameProps {
+  sampleText: string;
 }
+
+class WidgetName extends React.Component<WidgetNameProps, {}> {
+  render() {
+      return <div>{ "Hello " + this.props.sampleText }</div>;
+  }
+}
+
+export default WidgetName;

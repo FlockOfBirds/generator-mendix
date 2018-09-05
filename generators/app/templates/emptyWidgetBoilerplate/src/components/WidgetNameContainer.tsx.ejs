@@ -1,19 +1,13 @@
 import * as React from "react";
-import { WidgetName } from "./WidgetName";
+import WidgetName from "./WidgetName";
+import { createElement } from 'react';
 
-interface WrapperProps {
-    class: string;
-    mxObject?: mendix.lib.MxObject;
-    style: string;
-    readOnly: boolean;
-}
-
-interface WidgetNameContainerProps extends WrapperProps {
-    sampleAttribute: string;
+export interface WidgetNameContainerProps {
+  sampleText: string;
 }
 
 export default class WidgetNameContainer extends React.Component<WidgetNameContainerProps, {}> {
-    render() {
-        return <WidgetName />);
-    }
+  render() {
+      return <WidgetName sampleText={this.props.sampleText} />
+  }
 }
