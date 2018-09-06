@@ -8,6 +8,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "start": "nodemon --watch webpack.config.js --watch Gruntfile.js --exec \"grunt",
+    "start:dev": "webpack-dev-server --open",
     "build": "grunt",
     "emit": "tsc",
     "pretest": "tsc && npm run lint && npm run build",

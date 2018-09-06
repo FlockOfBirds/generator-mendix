@@ -3,6 +3,11 @@ const webpack = require("webpack");
 const webpackConfig = require("./webpack.config");
 const merge = require("webpack-merge");
 
+const packageJson = require("./package.json");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const widgetName = packageJson.widgetName;
+const name = packageJson.widgetName.toLowerCase();
+
 const webpackConfigRelease = webpackConfig.map(config => merge(config, {
     devtool: false,
     mode: "production",
@@ -10,15 +15,23 @@ const webpackConfigRelease = webpackConfig.map(config => merge(config, {
         minimize: true
     }
 }));
+webpackConfigRelease[0].plugins.push(new ExtractTextPlugin({
+    filename: `./widgets/com/mendix/widget/custom/${name}/ui/${widgetName}.css`
+}));
+webpackConfigRelease[0].module.rules[1] = { test: /\.css$/, loader: ExtractTextPlugin.extract({
+        fallback: "style-loader",
+        use: [ "css-loader", "sass-loader" ]
+    })
+};
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
     const pkg = grunt.file.readJSON("package.json");
     grunt.initConfig({
 
         watch: {
             updateWidgetFiles: {
-                files: ["./src/**/*"],
-                tasks: ["webpack:develop", "file_append", "compress", "copy"],
+                files: [ "./src/**/*" ],
+                tasks: [ "webpack:develop", "file_append", "compress", "copy" ],
                 options: {
                     debounceDelay: 250
                 }
@@ -31,41 +44,41 @@ module.exports = function (grunt) {
                     archive: "./dist/" + pkg.version + "/" + pkg.widgetName + ".mpk",
                     mode: "zip"
                 },
-                files: [{
+                files: [ {
                     expand: true,
                     date: new Date(),
                     store: false,
-                    cwd: "./dist/tmp/src",
-                    src: ["**/*"]
-                }]
+                    cwd: "./dist/tmp/widgets",
+                    src: [ "**/*" ]
+                } ]
             }
         },
 
         copy: {
             distDeployment: {
-                files: [{
+                files: [ {
                     dest: "./dist/MxTestProject/deployment/web/widgets",
-                    cwd: "./dist/tmp/src/",
-                    src: ["**/*"],
+                    cwd: "./dist/tmp/widgets/",
+                    src: [ "**/*" ],
                     expand: true
-                }]
+                } ]
             },
             mpk: {
-                files: [{
+                files: [ {
                     dest: "./dist/MxTestProject/widgets",
                     cwd: "./dist/" + pkg.version + "/",
-                    src: [pkg.widgetName + ".mpk"],
+                    src: [ pkg.widgetName + ".mpk" ],
                     expand: true
-                }]
+                } ]
             }
         },
 
         file_append: {
             addSourceURL: {
-                files: [{
+                files: [ {
                     append: `\n\n//# sourceURL=${pkg.widgetName}.webmodeler.js\n`,
-                    input: `dist/tmp/src/${pkg.widgetName}.webmodeler.js`
-                }]
+                    input: `dist/tmp/widgets/${pkg.widgetName}.webmodeler.js`
+                } ]
             }
         },
 
@@ -96,14 +109,16 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-file-append");
     grunt.loadNpmTasks("grunt-webpack");
 
-    grunt.registerTask("default", ["clean build", "watch"]);
+    grunt.registerTask("default", [ "clean build", "watch" ]);
     grunt.registerTask(
         "clean build",
-        "Compiles all the assets and copies the files to the dist directory.", ["checkDependencies", "clean:build", "webpack:develop", "file_append", "compress:dist", "copy"]
+        "Compiles all the assets and copies the files to the dist directory.",
+        [ "checkDependencies", "clean:build", "webpack:develop", "file_append", "compress:dist", "copy" ]
     );
     grunt.registerTask(
         "release",
-        "Compiles all the assets and copies the files to the dist directory. Minified without source mapping", ["checkDependencies", "clean:build", "webpack:release", "file_append", "compress:dist", "copy"]
+        "Compiles all the assets and copies the files to the dist directory. Minified without source mapping",
+        [ "checkDependencies", "clean:build", "webpack:release", "file_append", "compress:dist", "copy" ]
     );
-    grunt.registerTask("build", ["clean build"]);
+    grunt.registerTask("build", [ "clean build" ]);
 };

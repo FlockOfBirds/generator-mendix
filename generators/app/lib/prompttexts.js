@@ -58,12 +58,12 @@ function promptsNew() {
     message: "Which task runner do you want to use for development?",
     choices: [
       {
-        name: "Grunt (recommended)",
-        value: "grunt"
+        name: "Gulp (recommended)",
+        value: "gulp"
       },
       {
-        name: "Gulp",
-        value: "gulp"
+        name: "Grunt",
+        value: "grunt"
       }
     ],
     default: 0

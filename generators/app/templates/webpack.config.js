@@ -1,7 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const package = require("./package");
 const widgetName = package.widgetName;
@@ -11,8 +10,15 @@ const widgetConfig = {
     entry: `./src/components/${widgetName}Container.tsx`,
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: `src/com/mendix/widget/custom/${name}/${widgetName}.js`,
-        libraryTarget: "umd"
+        filename: `widgets/com/mendix/widget/custom/${name}/${widgetName}.js`,
+        libraryTarget: "umd",
+    },
+    devServer: {
+        port: 3000,
+        proxy: [ {
+            context: [ "**", "!/widgets/com/mendix/widget/custom/badge/Badge.js" ],
+            target: "http://localhost:8080"
+        } ]
     },
     resolve: {
         extensions: [ ".ts", ".tsx", ".js" ],
@@ -23,18 +29,29 @@ const widgetConfig = {
     module: {
         rules: [
             { test: /\.tsx$/, use: "ts-loader" },
-            { test: /\.css$/, loader: ExtractTextPlugin.extract({
-                fallback: "style-loader",
-                use: "css-loader"
-            }) }
+            { test: /\.(css|scss)$/,use: [
+                "raw-loader", "css-loader", "sass-loader"
+            ] },
+            { test: /\.png$/, loader: "url-loader?limit=100000" },
+            { test: /\.jpg$/, loader: "file-loader" },
+            { test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },
+            { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/octet-stream" },
+            { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader" },
+            { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=image/svg+xml" }
         ]
     },
-    mode: "development",
     devtool: "eval",
+    mode: "development",
     externals: [ "react", "react-dom" ],
     plugins: [
-        new CopyWebpackPlugin([ { from: "src/**/*.xml" } ], { copyUnmodified: true }),
-        new ExtractTextPlugin({ filename: `./src/com/mendix/widget/custom/${name}/ui/${widgetName}.css` }),
+        new CopyWebpackPlugin(
+            [ {
+                from: "src/**/*.xml",
+                toType: "template",
+                to: "widgets/[name].[ext]"
+            } ],
+            { copyUnmodified: true }
+        ),
         new webpack.LoaderOptionsPlugin({ debug: true })
     ]
 };
@@ -43,7 +60,7 @@ const previewConfig = {
     entry: `./src/${widgetName}.webmodeler.tsx`,
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: `src/${widgetName}.webmodeler.js`,
+        filename: `widgets/${widgetName}.webmodeler.js`,
         libraryTarget: "commonjs"
     },
     resolve: {
