@@ -306,6 +306,8 @@ module.exports = class extends Generator {
     this.fs.copy(this.templatePath("tslint.json"), this.destinationPath("tslint.json"));
     // karma
     this.fs.copy(this.templatePath("karma.conf.js"), this.destinationPath("karma.conf.js"));
+    // git attribute
+    this.fs.copy(this.templatePath(".gitattributes"), this.destinationPath(".gitattributes"));
     // tsconfig
     this.fs.copy(this.templatePath("tsconfig.json"), this.destinationPath("tsconfig.json"));
     // webpack

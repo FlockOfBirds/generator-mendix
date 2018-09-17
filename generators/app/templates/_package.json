@@ -6,8 +6,8 @@
   "copyright": "<%- copyright %>",
   "author": "<%- author %>",
   "scripts": {
-    "build": "grunt release",
     "start": "nodemon --watch webpack.config.js --watch Gruntfile.js --exec \"grunt",
+    "start:dev": "webpack-dev-server --open",
     "emit": "tsc",
     "pretest": "tsc && npm run lint && npm run build"<% if (unitTests) { %>,
     "test": "npm run test:unit && npm run test:conditional",
@@ -17,6 +17,7 @@
     "test:e2e": "tsc -p ./tests/e2e/tsconfig.json && wdio ./tests/e2e/wdio.conf.js",
     "test:e2e:dev": "tsc -p ./tests/e2e/tsconfig.json && set DEBUG=true&& wdio ./tests/e2e/wdio.conf.js",<% } %>
     "lint": "tslint -c tslint.json '**/*.ts' '**/*.tsx' --exclude '**/node_modules/**'",
+    "build": "grunt",
     "lint:fix": "npm run lint -- --fix"<% if (e2eTests) { %>,
     "deploy": " npm run updateProject && npm run deployApp",
     "updateProject": "node ./node_modules/mendix-widget-build-script/dist/UpdateMxProject.js",
@@ -63,9 +64,9 @@
     "grunt-contrib-watch": "^1.0.1",
     "grunt-file-append": "0.0.7",
     "grunt-newer": "^1.3.0",
-    "grunt-webpack": "^3.1.2",<% if (unitTests) { %>
+    "grunt-webpack": "^3.1.2",
     "istanbul": "^0.4.3",
-    "istanbul-instrumenter-loader": "^3.0.1",<% } %>
+    "istanbul-instrumenter-loader": "^3.0.1",
     "json-loader": "^0.5.4",
     "json-source-map": "^0.4.0",<% if (unitTests) { %>
     "jasmine": "^2.8.0",
