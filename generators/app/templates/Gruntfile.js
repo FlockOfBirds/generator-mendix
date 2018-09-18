@@ -1,7 +1,11 @@
 "use strict";
-const webpack = require("webpack");
 const webpackConfig = require("./webpack.config");
 const merge = require("webpack-merge");
+
+const packageJson = require("./package.json");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const widgetName = packageJson.widgetName;
+const name = packageJson.widgetName.toLowerCase();
 
 const webpackConfigRelease = webpackConfig.map(config => merge(config, {
     devtool: false,
@@ -10,8 +14,16 @@ const webpackConfigRelease = webpackConfig.map(config => merge(config, {
         minimize: true
     }
 }));
+webpackConfigRelease[0].plugins.push(new ExtractTextPlugin({
+    filename: `./com/mendix/widget/custom/${name}/ui/${widgetName}.css`
+}));
+webpackConfigRelease[0].module.rules[1] = { test: /\.css$/, loader: ExtractTextPlugin.extract({
+        fallback: "style-loader",
+        use: [ "css-loader", "sass-loader" ]
+    })
+};
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
     const pkg = grunt.file.readJSON("package.json");
     grunt.initConfig({
 
@@ -99,11 +111,13 @@ module.exports = function (grunt) {
     grunt.registerTask("default", [ "clean build", "watch" ]);
     grunt.registerTask(
         "clean build",
-        "Compiles all the assets and copies the files to the dist directory.", ["checkDependencies", "clean:build", "webpack:develop", "file_append", "compress:dist", "copy"]
+        "Compiles all the assets and copies the files to the dist directory.",
+        [ "checkDependencies", "clean:build", "webpack:develop", "file_append", "compress:dist", "copy" ]
     );
     grunt.registerTask(
         "release",
-        "Compiles all the assets and copies the files to the dist directory. Minified without source mapping", ["checkDependencies", "clean:build", "webpack:release", "file_append", "compress:dist", "copy"]
+        "Compiles all the assets and copies the files to the dist directory. Minified without source mapping",
+        [ "checkDependencies", "clean:build", "webpack:release", "file_append", "compress:dist", "copy" ]
     );
     grunt.registerTask("build", [ "clean build" ]);
 };

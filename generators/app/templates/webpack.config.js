@@ -1,10 +1,11 @@
-const webpack = require("webpack");
 const path = require("path");
+const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const pkg = require("./package");
-const widgetName = pkg.widgetName;
-const name = pkg.widgetName.toLowerCase();
+
+const package = require("./package");
+const widgetName = package.widgetName;
+const name = package.widgetName.toLowerCase();
 
 const widgetConfig = {
     entry: `./src/components/${widgetName}Container.ts`,
@@ -13,6 +14,13 @@ const widgetConfig = {
         filename: `src/com/mendix/widget/custom/${name}/${widgetName}.js`,
         libraryTarget: "umd"
     },
+    devServer: {
+        port: 3000,
+        proxy: [ {
+            context: [ "**", "!/com/mendix/widget/custom/badge/Badge.js" ],
+            target: "http://localhost:8080"
+        } ]
+    },
     resolve: {
         extensions: [ ".ts", ".js" ],
         alias: {
@@ -20,34 +28,28 @@ const widgetConfig = {
         }
     },
     module: {
-        rules: [ {
-                test: /\.ts$/,
-                loader: "ts-loader"
-            },
+        rules: [
             {
-                test: /\.css$/,
-                loader: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: "css-loader"
-                })
+                test: /\.(ts|tsx)?$/,
+                use: [
+                    {
+                        loader: "ts-loader"
+                    }
+                ]
             },
-            {
-                test: /\.scss$/,
-                loader: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: [ {
-                            loader: "css-loader"
-                        },
-                        {
-                            loader: "sass-loader"
-                        }
-                    ]
-                })
-            }
+            { test: /\.(css|scss)$/,use: [
+                "raw-loader", "css-loader", "sass-loader"
+            ] },
+            { test: /\.png$/, loader: "url-loader?limit=100000" },
+            { test: /\.jpg$/, loader: "file-loader" },
+            { test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },
+            { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/octet-stream" },
+            { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader" },
+            { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=image/svg+xml" }
         ]
     },
-    mode: "development",
     devtool: "eval",
+    mode: "development",
     externals: [ "react", "react-dom" ],
     plugins: [
         new CopyWebpackPlugin([ {
@@ -76,8 +78,12 @@ const previewConfig = {
     },
     module: {
         rules: [ {
-                test: /\.ts$/,
-                use: "ts-loader"
+                test: /\.(ts|tsx)?$/,
+                use: [
+                    {
+                        loader: "ts-loader"
+                    }
+                ]
             }, {
                 test: /\.css$/,
                 use: "raw-loader"
