@@ -17,7 +17,7 @@
     "test:e2e": "tsc -p ./tests/e2e/tsconfig.json && wdio ./tests/e2e/wdio.conf.js",
     "test:e2e:dev": "tsc -p ./tests/e2e/tsconfig.json && set DEBUG=true&& wdio ./tests/e2e/wdio.conf.js",<% } %>
     "lint": "tslint -c tslint.json '**/*.ts' '**/*.tsx' --exclude '**/node_modules/**'",
-    "build": "grunt",
+    "build": "grunt release",
     "lint:fix": "npm run lint -- --fix"<% if (e2eTests) { %>,
     "deploy": " npm run updateProject && npm run deployApp",
     "updateProject": "node ./node_modules/mendix-widget-build-script/dist/UpdateMxProject.js",

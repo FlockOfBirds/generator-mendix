@@ -324,18 +324,20 @@ module.exports = class extends Generator {
     );
 
     // Package.JSON
-    try {
-      extfs.removeSync(this.destinationPath("package.json"));
-    } catch (e) { }
+    try { extfs.removeSync(this.destinationPath("package.json")); } catch (e) { }
 
     this.fs.copyTpl(this.templatePath("_package.json"), this.destinationPath("package.json"), this.widget, {});
 
-    // Add Gulp/Grunt/tsconfig/tslint/webpack/karma
+    // Package.JSON
+    try { extfs.removeSync(this.destinationPath("tsconfig.json")); } catch (e) { }
+
+    this.fs.copyTpl(this.templatePath("tsconfig.json"), this.destinationPath("tsconfig.json"), this.widget, {});
+
+    // Add Gulp/Grunt/tslint/webpack/karma
     this.pkg = pkg;
 
     try { extfs.removeSync(this.destinationPath("Gruntfile.js")); } catch (e) { }
     try { extfs.removeSync(this.destinationPath("Gulpfile.js")); } catch (e) { }
-    try { extfs.removeSync(this.destinationPath("tsconfig.json")); } catch (e) { }
     try { extfs.removeSync(this.destinationPath("tslint.json")); } catch (e) { }
     try { extfs.removeSync(this.destinationPath("karma.conf.js")); } catch (e) { }
     try { extfs.removeSync(this.destinationPath("webpack.config.js")); } catch (e) { }
