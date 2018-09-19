@@ -340,16 +340,7 @@ module.exports = class extends Generator {
       }
     );
     // webpack
-    this.fs.copy(
-      this.templatePath("webpack.config.js"), this.destinationPath("webpack.config.js"),
-      {
-        process: function (file) {
-          var fileText = file.toString();
-          fileText = fileText.replace(/WidgetName/g, this.widget.widgetName);
-          return fileText;
-        }.bind(this)
-      }
-    );
+    this.fs.copy(this.templatePath("webpack.config.js"), this.destinationPath("webpack.config.js"));
 
     // Package.JSON
     try {

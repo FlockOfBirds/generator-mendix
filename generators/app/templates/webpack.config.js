@@ -16,7 +16,7 @@ const widgetConfig = {
     devServer: {
         port: 3000,
         proxy: [ {
-            context: [ "**", "!/widgets/com/mendix/widget/custom/badge/Badge.js" ],
+            context: [ "**", `!/com/mendix/widget/custom/${name}/${widgetName}.js` ],
             target: "http://localhost:8080"
         } ]
     },
