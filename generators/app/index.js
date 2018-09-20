@@ -311,17 +311,7 @@ module.exports = class extends Generator {
     // tsconfig
     this.fs.copy(this.templatePath("tsconfig.json"), this.destinationPath("tsconfig.json"));
     // webpack
-    this.fs.copy(
-      this.templatePath("webpack.config.js"),
-      this.destinationPath("webpack.config.js"),
-      {
-        process: function (file) {
-          var fileText = file.toString();
-          fileText = fileText.replace(/WidgetName/g, this.widget.widgetName);
-          return fileText;
-        }.bind(this)
-      }
-    );
+    this.fs.copy(this.templatePath("webpack.config.js"), this.destinationPath("webpack.config.js"));
 
     // Package.JSON
     try { extfs.removeSync(this.destinationPath("package.json")); } catch (e) { }
