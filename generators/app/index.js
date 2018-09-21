@@ -48,9 +48,6 @@ module.exports = class extends Generator {
           this.current.author = destPkg.author;
           this.current.copyright = destPkg.copyright;
           this.current.license = destPkg.license;
-          this.current.builder = typeof destPkg.devDependencies.grunt !== "undefined"
-              ? "grunt"
-              : "gulp";
         } catch (e) {
           console.error(text.PACKAGE_READ_ERROR + e.toString());
           this.FINISHED = true;
@@ -146,8 +143,6 @@ module.exports = class extends Generator {
     this.widget.e2eTests = this.props.e2eTests;
     this.widget.unitTests = this.props.unitTests;
     this.widget.generatorVersion = pkg.version;
-
-    this.widget.builder = this.props.builder;
 
     if (this.isNew) {
       const source = this.props.boilerplate === "badgeWidgetBoilerPlate" ? boilerPlatePath : emptyBoilerplatePath;
@@ -310,10 +305,18 @@ module.exports = class extends Generator {
     this.fs.copy(this.templatePath(".gitattributes"), this.destinationPath(".gitattributes"));
     // tsconfig
     this.fs.copy(this.templatePath("tsconfig.json"), this.destinationPath("tsconfig.json"));
+    // crosszip-config
+    this.fs.copy(this.templatePath("crosszip-config.js"), this.destinationPath("crosszip-config.js"),
+      {
+        process: function (file) {
+          var fileText = file.toString();
+          fileText = fileText.replace(/WidgetName/g, this.widget.widgetName);
+          return fileText;
+        }.bind(this)
+      }
+    );
     // webpack
-    this.fs.copy(
-      this.templatePath("webpack.config.js"),
-      this.destinationPath("webpack.config.js"),
+    this.fs.copy(this.templatePath("webpack.config.js"), this.destinationPath("webpack.config.js"),
       {
         process: function (file) {
           var fileText = file.toString();
@@ -341,14 +344,6 @@ module.exports = class extends Generator {
     try { extfs.removeSync(this.destinationPath("tslint.json")); } catch (e) { }
     try { extfs.removeSync(this.destinationPath("karma.conf.js")); } catch (e) { }
     try { extfs.removeSync(this.destinationPath("webpack.config.js")); } catch (e) { }
-
-    if (this.widget.builder === "gulp") {
-      this.fs.copyTpl(this.templatePath("Gulpfile.js"), this.destinationPath("Gulpfile.js"), this, {});
-    } else {
-      this.fs.copyTpl(this.templatePath("Gruntfile.js"), this.destinationPath("Gruntfile.js"), this, {});
-    }
-
-    this.fs.copy(this.templatePath("editorconfig"), this.destinationPath(".editorconfig"));
   }
 
   install() {
