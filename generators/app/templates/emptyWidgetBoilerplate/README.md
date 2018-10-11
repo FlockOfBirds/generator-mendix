@@ -1,1 +1,2 @@
 # WidgetName
+Simple hello widget
