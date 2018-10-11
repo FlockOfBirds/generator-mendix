@@ -149,12 +149,12 @@ module.exports = class extends Generator {
 
       // Define generic files to be copied
       const genericFiles = [
-        { fileSource: "README.md", destination: "README.md" },
         { fileSource: "xsd/widget.xsd", destination: "xsd/widget.xsd" }
       ];
 
       // Define widget files to be copied
       const widgetFiles = [
+        { fileSource: "README.md", destination: "README.md" },
         {
           fileSource: `${widgetSrcFolder}WidgetName.ts.ejs`,
           destination: `${widgetSrcFolder}${this.widget.widgetName}.ts`
@@ -163,7 +163,6 @@ module.exports = class extends Generator {
           fileSource: `${widgetSrcFolder}WidgetNameContainer.ts.ejs`,
           destination: `${widgetSrcFolder}${this.widget.widgetName}Container.ts`
         },
-        { fileSource: `${widgetSrcFolder}Alert.ts.ejs`, destination: `${widgetSrcFolder}Alert.ts` },
         { fileSource: "src/WidgetName.webmodeler.ts.ejs", destination: "src/" + this.widget.widgetName + ".webmodeler.ts" },
         { fileSource: "src/ui/WidgetName.css", destination: "src/ui/" + this.widget.widgetName + ".css" },
         { fileSource: "src/WidgetName.xml", destination: "src/" + this.widget.widgetName + ".xml" }
@@ -171,9 +170,7 @@ module.exports = class extends Generator {
 
       // Copy generic files
       genericFiles.forEach(file => {
-        this.fs.copy(
-          this.templatePath(source + file.fileSource), this.destinationPath(file.destination)
-        );
+        this.fs.copy(this.templatePath(source + file.fileSource), this.destinationPath(file.destination));
       });
 
       // Copy widget files based on WidgetName
@@ -193,58 +190,67 @@ module.exports = class extends Generator {
         );
       });
 
-      if (this.props.boilerplate !== "empty") {
-        // Copy MxTestProject
+      // Copy unit tests based on WidgetName
+      if (this.widget.unitTests) {
         this.fs.copy(
-          this.templatePath(source + "dist/MxTestProject/Test.mpr"), this.destinationPath("dist/MxTestProject/Test.mpr")
+          this.templatePath(
+            source + "src/components/__tests__/WidgetName.spec.ts.ejs"
+          ), this.destinationPath("src/components/__tests__/" + this.widget.widgetName + ".spec.ts"),
+          {
+            process: function(file) {
+              var fileText = file.toString();
+              fileText = fileText
+                .replace(/WidgetName/g, this.widget.widgetName)
+                .replace(/packageName/g, this.widget.packageName);
+              return fileText;
+            }.bind(this)
+          }
         );
+
+        if (this.props.boilerplate !== "empty") {
+          this.fs.copy(this.templatePath(source + "src/components/__tests__/Alert.spec.ts.ejs"),
+            this.destinationPath("src/components/__tests__/Alert.spec.ts")
+          );
+        }
+
+        this.fs.copy(this.templatePath("tests/remap.js.ejs"), this.destinationPath("tests/remap.js"));
 
         // Copy tests folder
-        this.fs.copy(
-          this.templatePath(source + "typings/"), this.destinationPath("typings/")
-        );
+        this.fs.copy(this.templatePath("tests/"), this.destinationPath("tests/"));
+      }
 
-        // Copy unit tests based on WidgetName
-        if (this.widget.unitTests) {
+      if (this.props.boilerplate !== "empty") {
+         this.fs.copy(this.templatePath(source + `${widgetSrcFolder}Alert.ts.ejs`),
+         this.destinationPath(`${widgetSrcFolder}Alert.ts`));
+        // Copy MxTestProject
+        this.fs.copy(this.templatePath(source + "dist/MxTestProject/Test.mpr"),
+          this.destinationPath("dist/MxTestProject/Test.mpr"));
+
+        if (this.widget.e2eTests || this.widget.unitTests) {// Copy typings folder
+          this.fs.copy(this.templatePath("typings/"), this.destinationPath("typings/"));
+        }
+
+        // Copy end-to-end tests based on WidgetName
+        if (this.widget.e2eTests) {
           this.fs.copy(
-            this.templatePath(source + "src/components/__tests__/WidgetName.spec.ts.ejs"),
-            this.destinationPath("src/components/__tests__/" + this.widget.widgetName + ".spec.ts"),
+            this.templatePath("typings/WidgetName.d.ts.ejs"),
+            this.destinationPath("typings/" + this.widget.widgetName + ".d.ts"),
             {
-              process: function (file) {
+              process: function(file) {
                 var fileText = file.toString();
-                fileText = fileText.replace(
-                  /WidgetName/g,
-                  this.widget.widgetName
-                );
+                fileText = fileText.replace(/WidgetName/g, this.widget.widgetName);
                 return fileText;
               }.bind(this)
             }
           );
 
           this.fs.copy(
-            this.templatePath(source + "src/components/__tests__/Alert.spec.ts.ejs"),
-            this.destinationPath("src/components/__tests__/Alert.spec.ts")
-          );
-
-          this.fs.copy(
-            this.templatePath(source + "tests/remap.js.ejs"), this.destinationPath("tests/remap.js")
-          );
-
-        // Copy tests folder
-          this.fs.copy(
-            this.templatePath(source + "tests/"), this.destinationPath("tests/")
-          );
-        }
-
-        // Copy end-to-end tests based on WidgetName
-        if (this.widget.e2eTests) {
-          this.fs.copy(
-            this.templatePath(source + "typings/WidgetName.d.ts.ejs"),
-            this.destinationPath("typings/" + this.widget.widgetName + ".d.ts"),
+            this.templatePath("localSettings.js.ejs"),
+            this.destinationPath("localSettings.js"),
             {
-              process: function (file) {
+              process: function(file) {
                 var fileText = file.toString();
-                fileText = fileText.replace(/WidgetName/g, this.widget.widgetName);
+                fileText = fileText.replace(/packageName/g, this.widget.packageName);
                 return fileText;
               }.bind(this)
             }
@@ -256,26 +262,24 @@ module.exports = class extends Generator {
             {
               process: function (file) {
                 var fileText = file.toString();
-                fileText = fileText.replace(
-                  /WidgetName/g, this.widget.widgetName
-                );
+                fileText = fileText
+                  .replace(/WidgetName/g, this.widget.widgetName)
+                  .replace(/packageName/g, this.widget.packageName);
                 return fileText;
               }.bind(this)
             }
           );
 
-          this.fs.copy(
-            this.templatePath(source + "e2e/pages/home.page.ts.ejs"), this.destinationPath("tests/e2e/pages/home.page.ts")
-          );
+          this.fs.copy(this.templatePath(source + "e2e/pages/home.page.ts.ejs"), this.destinationPath("tests/e2e/pages/home.page.ts"));
 
-          this.fs.copy(
-            this.templatePath(source + "e2e/wdio.conf.js.ejs"), this.destinationPath("tests/e2e/wdio.conf.js")
-          );
+          this.fs.copy(this.templatePath(source + "e2e/wdio.conf.js.ejs"), this.destinationPath("tests/e2e/wdio.conf.js"));
 
-          this.fs.copy(
-            this.templatePath(source + "e2e/tsconfig.json"), this.destinationPath("tests/e2e/tsconfig.json")
-          );
+          this.fs.copy(this.templatePath(source + "e2e/tsconfig.json"), this.destinationPath("tests/e2e/tsconfig.json"));
         }
+      } else {
+        this.fs.copy(this.templatePath(source + "dist/MxTestProject/widget"),
+          this.destinationPath("dist/MxTestProject/widget")
+        );
       }
 
       // Rename references package.xml
@@ -292,7 +296,6 @@ module.exports = class extends Generator {
           }.bind(this)
         }
       );
-
     }
 
     // Gitignore
@@ -300,7 +303,8 @@ module.exports = class extends Generator {
     // tslint
     this.fs.copy(this.templatePath("tslint.json"), this.destinationPath("tslint.json"));
     // karma
-    this.fs.copy(this.templatePath("karma.conf.js"), this.destinationPath("karma.conf.js"));
+    this.widget.e2eTests || this.widget.unitTests ? this.fs.copy(this.templatePath("karma.conf.js"),
+      this.destinationPath("karma.conf.js")) : "";
     // git attribute
     this.fs.copy(this.templatePath(".gitattributes"), this.destinationPath(".gitattributes"));
     // tsconfig
@@ -340,7 +344,7 @@ module.exports = class extends Generator {
     this.pkg = pkg;
 
     try { extfs.removeSync(this.destinationPath("Gruntfile.js")); } catch (e) { }
-    try { extfs.removeSync(this.destinationPath("Gulpfile.js")); } catch (e) { }
+    try { extfs.removeSync(this.destinationPasth("Gulpfile.js")); } catch (e) { }
     try { extfs.removeSync(this.destinationPath("tslint.json")); } catch (e) { }
     try { extfs.removeSync(this.destinationPath("karma.conf.js")); } catch (e) { }
     try { extfs.removeSync(this.destinationPath("webpack.config.js")); } catch (e) { }
@@ -364,5 +368,8 @@ module.exports = class extends Generator {
       this.log(text.END_RUN_BUILD_MSG);
       this.spawnCommand("npm", ["run", "build"]);
     }
+
+    // Remove .yo-rc.json
+    try { fs.unlink(this.destinationPath(".yo-rc.json")); } catch (e) { }
   }
 };

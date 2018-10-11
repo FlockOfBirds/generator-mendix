@@ -41,12 +41,12 @@
   "devDependencies": {
     "@types/classnames": "^2.2.4",
     "@types/core-js": "^0.9.46",<% if (e2eTests) { %>
-    "@types/webdriverio": "^4.10.2",
+    "@types/webdriverio": "^4.10.2",<% } %><% if (unitTests || e2eTests) { %>
     "@types/enzyme": "^3.1.10",
     "@types/enzyme-adapter-react-16": "^1.0.2",<% } %>
     "@types/rimraf": "^2.0.2",
     "@types/globalize": "0.0.34",<% if (unitTests) { %>
-    "@types/jasmine": "^2.8.8",
+    "@types/jasmine": "^2.8.9",
     "@types/karma": "^1.7.3",<% } %>
     "@types/node": "9.6.7",
     "@types/react": "^16.3.17",
@@ -56,7 +56,7 @@
     "copy-webpack-plugin": "^4.5.1",
     "core-js": "^2.5.7",
     "cross-zip-cli": "^1.0.0",
-    "css-loader": "^0.28.11",<% if (e2eTests) { %>
+    "css-loader": "^0.28.11",<% if (unitTests || e2eTests) { %>
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",<% } %>
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
@@ -64,7 +64,7 @@
     "istanbul": "^0.4.3",
     "istanbul-instrumenter-loader": "^3.0.1",
     "json-loader": "^0.5.4",
-    "json-source-map": "^0.4.0",<% if (unitTests) { %>
+    "json-source-map": "^0.4.0",<% if (unitTests || e2eTests) { %>
     "jasmine": "^2.8.0",
     "karma": "^2.0.3",
     "karma-chrome-launcher": "^2.2.0",
