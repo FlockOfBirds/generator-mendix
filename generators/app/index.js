@@ -226,7 +226,8 @@ module.exports = class extends Generator {
         this.fs.copy(this.templatePath(source + "dist/MxTestProject/Test.mpr"),
           this.destinationPath("dist/MxTestProject/Test.mpr"));
 
-        if (this.widget.e2eTests || this.widget.unitTests) {// Copy typings folder
+        if (this.widget.e2eTests || this.widget.unitTests) {
+          // Copy typings folder
           this.fs.copy(this.templatePath("typings/"), this.destinationPath("typings/"));
         }
 
@@ -245,8 +246,7 @@ module.exports = class extends Generator {
           );
 
           this.fs.copy(
-            this.templatePath("localSettings.js.ejs"),
-            this.destinationPath("localSettings.js"),
+            this.templatePath("localSettings.js.ejs"), this.destinationPath("localSettings.js"),
             {
               process: function(file) {
                 var fileText = file.toString();
@@ -298,28 +298,13 @@ module.exports = class extends Generator {
       );
     }
 
-    // Gitignore
     this.fs.copy(this.templatePath("_gitignore"), this.destinationPath(".gitignore"));
-    // tslint
     this.fs.copy(this.templatePath("tslint.json"), this.destinationPath("tslint.json"));
-    // karma
     this.widget.e2eTests || this.widget.unitTests ? this.fs.copy(this.templatePath("karma.conf.js"),
       this.destinationPath("karma.conf.js")) : "";
-    // git attribute
     this.fs.copy(this.templatePath(".gitattributes"), this.destinationPath(".gitattributes"));
-    // tsconfig
     this.fs.copy(this.templatePath("tsconfig.json"), this.destinationPath("tsconfig.json"));
-    // crosszip-config
-    this.fs.copy(this.templatePath("crosszip-config.js"), this.destinationPath("crosszip-config.js"),
-      {
-        process: function (file) {
-          var fileText = file.toString();
-          fileText = fileText.replace(/WidgetName/g, this.widget.widgetName);
-          return fileText;
-        }.bind(this)
-      }
-    );
-    // webpack
+    this.fs.copy(this.templatePath("crosszip-config.js"), this.destinationPath("crosszip-config.js"));
     this.fs.copy(this.templatePath("webpack.config.js"), this.destinationPath("webpack.config.js"),
       {
         process: function (file) {
@@ -330,7 +315,6 @@ module.exports = class extends Generator {
       }
     );
 
-    // Package.JSON
     try { extfs.removeSync(this.destinationPath("package.json")); } catch (e) { }
 
     this.fs.copyTpl(this.templatePath("_package.json"), this.destinationPath("package.json"), this.widget, {});
