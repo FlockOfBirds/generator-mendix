@@ -7,10 +7,9 @@
   "author": "<%- author %>",
   "scripts": {
     "clean": "rimraf dist/tmp",
-    "start": "nodemon --watch webpack.config.js",
     "start:dev": "webpack-dev-server --open",
     "emit": "tsc",
-    "postbuild": "cross-zip dist/tmp/src dist/MxTestProject/widgets/<%- widgetName %>.mpk",
+    "postbuild": "node crosszip-config.js",
     "prebuild": "npm run clean",
     "pretest": "tsc && npm run lint && npm run build"<% if (unitTests) { %>,
     "test": "npm run test:unit && npm run test:conditional",
