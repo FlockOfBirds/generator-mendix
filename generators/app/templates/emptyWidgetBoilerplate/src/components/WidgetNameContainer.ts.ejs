@@ -1,14 +1,18 @@
 import { Component, createElement } from "react";
+import { hot } from "react-hot-loader";
+
 import WidgetName from "./WidgetName";
 
 export interface WidgetNameContainerProps {
     sampleText: string;
 }
 
-export default class WidgetNameContainer extends Component<WidgetNameContainerProps, {}> {
+class WidgetNameContainer extends Component<WidgetNameContainerProps> {
     render() {
         return createElement(WidgetName, {
             sampleText: this.props.sampleText
         });
     }
 }
+
+export default hot(module)(WidgetNameContainer);

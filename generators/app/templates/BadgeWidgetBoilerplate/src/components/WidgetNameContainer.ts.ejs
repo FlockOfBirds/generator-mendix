@@ -1,4 +1,5 @@
 import { Component, createElement } from "react";
+import { hot } from "react-hot-loader";
 
 import { Alert } from "./Alert";
 import { WidgetName, BootstrapStyle } from "./WidgetName";
@@ -35,7 +36,7 @@ interface Nanoflow {
 type OnClickOptions = "doNothing" | "showPage" | "callMicroflow" | "callNanoflow";
 type PageLocation = "content" | "popup" | "modal";
 
-export default class WidgetNameContainer extends Component<WidgetNameContainerProps, WidgetNameContainerState> {
+class WidgetNameContainer extends Component<WidgetNameContainerProps, WidgetNameContainerState> {
     private subscriptionHandles: number[];
 
     constructor(props: WidgetNameContainerProps) {
@@ -183,3 +184,5 @@ export default class WidgetNameContainer extends Component<WidgetNameContainerPr
         return {};
     }
 }
+
+export default hot(module)(BadgeContainer);

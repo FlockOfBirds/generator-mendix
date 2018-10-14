@@ -2,6 +2,8 @@ const path = require("path");
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const FileManagerPlugin = require("filemanager-webpack-plugin");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 const package = require("./package");
 const widgetName = package.widgetName;
@@ -30,26 +32,52 @@ const widgetConfig = {
     module: {
         rules: [
             {
-                test: /\.(ts|tsx)?$/,
-                use: [
-                    {
-                        loader: "ts-loader"
+                test: /\.(j|t)sx?$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        cacheDirectory: true,
+                        babelrc: false,
+                        presets: [
+                            [
+                                "@babel/preset-env",
+                                { targets: { browsers: "last 2 versions" } }
+                            ],
+                            "@babel/preset-typescript",
+                            "@babel/preset-react"
+                        ],
+                        plugins: [
+                            [ "@babel/plugin-proposal-class-properties", { loose: true } ],
+                            "react-hot-loader/babel"
+                        ]
                     }
+                }
+            },
+            {
+                test: /\.css$/, loader: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: [ "css-loader", "sass-loader" ]
+                })
+            },
+            {
+                test: /\.(css|scss)$/, use: [
+                    "css-loader", "sass-loader"
                 ]
             },
-            { test: /\.(css|scss)$/,use: [
-                "raw-loader", "css-loader", "sass-loader"
-            ] },
             { test: /\.png$/, loader: "url-loader?limit=100000" },
             { test: /\.jpg$/, loader: "file-loader" },
-            { test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+            {
+                test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
                 loader: "url-loader?limit=10000&mimetype=application/font-woff"
             },
-            { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+            {
+                test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
                 loader: "url-loader?limit=10000&mimetype=application/octet-stream"
             },
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader" },
-            { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+            {
+                test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
                 loader: "url-loader?limit=10000&mimetype=image/svg+xml"
             }
         ]
@@ -58,13 +86,25 @@ const widgetConfig = {
     mode: "development",
     externals: [ "react", "react-dom" ],
     plugins: [
-        new CopyWebpackPlugin([ {
-            from: "src/**/*.xml"
-        } ], {
-            copyUnmodified: true
-        }),
+        new ForkTsCheckerWebpackPlugin(),
+        new CopyWebpackPlugin(
+            [ {
+                from: "src/**/*.xml",
+                toType: "template",
+                to: "widgets/[name].[ext]"
+            } ],
+            { copyUnmodified: true }
+        ),
         new ExtractTextPlugin({
             filename: `./src/com/mendix/widget/custom/${name}/ui/${widgetName}.css`
+        }),
+        new FileManagerPlugin({
+            onEnd: {
+                mkdir: [
+                    `./dist/${package.version}`,
+                    `./dist/MxTestProject/widgets`
+                ]
+            }
         }),
         new webpack.LoaderOptionsPlugin({
             debug: true
@@ -90,13 +130,12 @@ const previewConfig = {
                         loader: "ts-loader"
                     }
                 ]
-            }, {
-                test: /\.css$/,
-                use: "raw-loader"
             },
-            {
-                test: /\.scss$/,
-                use: [ "raw-loader", "sass-loader" ]
+            { test: /\.css$/, use: "raw-loader" },
+            { test: /\.scss$/, use: [
+                    { loader: "raw-loader" },
+                    { loader: "sass-loader" }
+                ]
             }
         ]
     },
