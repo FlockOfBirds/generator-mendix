@@ -30,7 +30,7 @@ module.exports = class extends Generator {
 
     this.folders = extfs.getDirsSync(this.destinationRoot());
     this.current = {};
-    this.current.version = "1.0.0";
+    this.current.version = "3.1.0";
     this.current.name = "CurrentWidget";
 
     if (this.folders.indexOf("src") !== -1) {
@@ -276,15 +276,10 @@ module.exports = class extends Generator {
 
           this.fs.copy(this.templatePath(source + "e2e/tsconfig.json"), this.destinationPath("tests/e2e/tsconfig.json"));
         }
-      } else {
-        this.fs.copy(this.templatePath(source + "dist/MxTestProject/widget"),
-          this.destinationPath("dist/MxTestProject/widget")
-        );
       }
 
       // Rename references package.xml
-      this.fs.copy(
-        this.templatePath(source + "src/package.xml"), this.destinationPath("src/package.xml"),
+      this.fs.copy(this.templatePath(source + "src/package.xml"), this.destinationPath("src/package.xml"),
         {
           process: function (file) {
             let fileText = file.toString();
@@ -298,6 +293,7 @@ module.exports = class extends Generator {
       );
     }
 
+    this.fs.copy(this.templatePath(".babelrc"), this.destinationPath(".babelrc"));
     this.fs.copy(this.templatePath("_gitignore"), this.destinationPath(".gitignore"));
     this.fs.copy(this.templatePath("tslint.json"), this.destinationPath("tslint.json"));
     this.widget.e2eTests || this.widget.unitTests ? this.fs.copy(this.templatePath("karma.conf.js"),
