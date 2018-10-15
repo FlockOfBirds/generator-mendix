@@ -14,7 +14,7 @@ interface WrapperProps {
 export interface WidgetNameContainerProps extends WrapperProps {
     valueAttribute: string;
     bootstrapStyle: BootstrapStyle;
-    packageNameType: "packageName" | "label";
+    packageNameType: "badge" | "label";
     packageNameValue: string;
     microflow: string;
     nanoflow: Nanoflow;
@@ -185,4 +185,4 @@ class WidgetNameContainer extends Component<WidgetNameContainerProps, WidgetName
     }
 }
 
-export default hot(module)(BadgeContainer);
+export default hot(module)(WidgetNameContainer);

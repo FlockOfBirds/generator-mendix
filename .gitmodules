@@ -1,3 +1,0 @@
-[submodule "generators/app/templates/AppStoreWidgetBoilerplate"]
-	path = generators/app/templates/AppStoreWidgetBoilerplate
-	url = https://github.com/mendix/AppStoreWidgetBoilerplate.git

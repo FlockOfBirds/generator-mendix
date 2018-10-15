@@ -11,7 +11,8 @@
     "types": [
       "mendix-client",<% if (unitTests || e2eTests) { %>
       "jasmine",<% } %>
-      "core-js"
+      "core-js",
+      "node"
     ],
     "moduleResolution": "node",
     "declaration": false,
