@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const package = require("./package");
 
-const dirPath = "./dist/MxTestProject/widgets/";
+const dirPath = "./dist/MxTestProject/widgets";
 const varsionPath = `./dist/${package.version}/`;
 
 function fileExist(filePath) {
@@ -14,11 +14,11 @@ function fileExist(filePath) {
     }
 }
 
-fileExist(path.join(__dirname, dirPath + package.widgetName + ".mpk"));
+fileExist(path.join(__dirname, dirPath + "/" + package.widgetName + ".mpk"));
 fileExist(path.join(__dirname, varsionPath + package.widgetName + ".mpk"));
 
 const tmpPath = path.join(__dirname, "./dist/tmp/src");
-const widgetPath = path.join(__dirname, dirPath + package.widgetName + ".mpk");
+const widgetPath = path.join(__dirname, dirPath + "/" + package.widgetName + ".mpk");
 const versionPath = path.join(__dirname, varsionPath + package.widgetName + ".mpk");
 
 zip.zipSync(tmpPath, widgetPath);

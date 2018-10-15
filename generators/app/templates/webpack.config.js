@@ -102,7 +102,7 @@ const widgetConfig = {
             onEnd: {
                 mkdir: [
                     `./dist/${package.version}`,
-                    `./dist/MxTestProject/widgets`
+                    "./dist/MxTestProject/widgets"
                 ]
             }
         }),

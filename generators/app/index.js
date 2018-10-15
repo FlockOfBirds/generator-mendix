@@ -214,8 +214,6 @@ module.exports = class extends Generator {
         }
 
         this.fs.copy(this.templatePath("tests/remap.js.ejs"), this.destinationPath("tests/remap.js"));
-
-        // Copy tests folder
         this.fs.copy(this.templatePath("tests/"), this.destinationPath("tests/"));
       }
 
@@ -227,11 +225,9 @@ module.exports = class extends Generator {
           this.destinationPath("dist/MxTestProject/Test.mpr"));
 
         if (this.widget.e2eTests || this.widget.unitTests) {
-          // Copy typings folder
           this.fs.copy(this.templatePath("typings/"), this.destinationPath("typings/"));
         }
 
-        // Copy end-to-end tests based on WidgetName
         if (this.widget.e2eTests) {
           this.fs.copy(
             this.templatePath("typings/WidgetName.d.ts.ejs"),
@@ -271,14 +267,11 @@ module.exports = class extends Generator {
           );
 
           this.fs.copy(this.templatePath(source + "e2e/pages/home.page.ts.ejs"), this.destinationPath("tests/e2e/pages/home.page.ts"));
-
           this.fs.copy(this.templatePath(source + "e2e/wdio.conf.js.ejs"), this.destinationPath("tests/e2e/wdio.conf.js"));
-
           this.fs.copy(this.templatePath(source + "e2e/tsconfig.json"), this.destinationPath("tests/e2e/tsconfig.json"));
         }
       }
 
-      // Rename references package.xml
       this.fs.copy(this.templatePath(source + "src/package.xml"), this.destinationPath("src/package.xml"),
         {
           process: function (file) {
@@ -299,35 +292,27 @@ module.exports = class extends Generator {
     this.widget.e2eTests || this.widget.unitTests ? this.fs.copy(this.templatePath("karma.conf.js"),
       this.destinationPath("karma.conf.js")) : "";
     this.fs.copy(this.templatePath(".gitattributes"), this.destinationPath(".gitattributes"));
-    this.fs.copy(this.templatePath("tsconfig.json"), this.destinationPath("tsconfig.json"));
-    this.fs.copy(this.templatePath("crosszip-config.js"), this.destinationPath("crosszip-config.js"));
-    this.fs.copy(this.templatePath("webpack.config.js"), this.destinationPath("webpack.config.js"),
-      {
-        process: function (file) {
-          var fileText = file.toString();
-          fileText = fileText.replace(/WidgetName/g, this.widget.widgetName);
-          return fileText;
-        }.bind(this)
-      }
-    );
 
     try { extfs.removeSync(this.destinationPath("package.json")); } catch (e) { }
-
     this.fs.copyTpl(this.templatePath("_package.json"), this.destinationPath("package.json"), this.widget, {});
 
     // Package.JSON
     try { extfs.removeSync(this.destinationPath("tsconfig.json")); } catch (e) { }
-
     this.fs.copyTpl(this.templatePath("tsconfig.json"), this.destinationPath("tsconfig.json"), this.widget, {});
 
-    // Add Gulp/Grunt/tslint/webpack/karma
+    try { extfs.removeSync(this.destinationPath("crosszip-config.js")); } catch (e) { }
+    this.fs.copyTpl(this.templatePath("crosszip-config.js"), this.destinationPath("crosszip-config.js"), this.widget, {});
+
+    try { extfs.removeSync(this.destinationPath("webpack.config.js")); } catch (e) { }
+    this.fs.copyTpl(this.templatePath("webpack.config.js"), this.destinationPath("webpack.config.js"), this.widget, {});
+
+    // Add Gulp/Grunt/tslint/karma
     this.pkg = pkg;
 
     try { extfs.removeSync(this.destinationPath("Gruntfile.js")); } catch (e) { }
     try { extfs.removeSync(this.destinationPasth("Gulpfile.js")); } catch (e) { }
     try { extfs.removeSync(this.destinationPath("tslint.json")); } catch (e) { }
     try { extfs.removeSync(this.destinationPath("karma.conf.js")); } catch (e) { }
-    try { extfs.removeSync(this.destinationPath("webpack.config.js")); } catch (e) { }
   }
 
   install() {
