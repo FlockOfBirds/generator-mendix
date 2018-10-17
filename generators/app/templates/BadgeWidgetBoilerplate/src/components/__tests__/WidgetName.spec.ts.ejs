@@ -7,99 +7,99 @@ describe("WidgetName", () => {
     const createWidgetName = (props: WidgetNameProps) => shallow(createElement(WidgetName, props));
 
     it("should render the structure", () => {
-        const badgeProps: WidgetNameProps = {
-            badgeType: "badge",
+        const packageNameProp: WidgetNameProps = {
+            packageNameType: "badge",
             bootstrapStyle: "default",
             onClickAction: jasmine.createSpy("onClick"),
             value: "0"
         };
-        const badge = createWidgetName(badgeProps);
+        const badge = createWidgetName(packageNameProp);
 
-        expect(badge).toBeElement(
+        expect(packageName).toBeElement(
             createElement("span",
                 {
-                    className: ("widget-badge badge label-default"),
+                    className: ("widget-packageName packageName label-default"),
                     onClick: jasmine.any(Function) as any,
-                    style: badgeProps.style
+                    style: packageNameProp.style
                 }, jasmine.any(String))
         );
     });
 
     it("should show no value when no value or default value provided", () => {
         const value = "value";
-        const badge = createWidgetName({ badgeType: "label", value, defaultValue: "default value" });
+        const packageName = createWidgetName({ packageNameType: "label", value, defaultValue: "default value" });
 
-        expect(badge.text()).toBe(value);
+        expect(packageName.text()).toBe(value);
     });
 
     it("should show default value when no value is provided", () => {
         const defaultValue = "default";
-        const badge = createWidgetName({ badgeType: "label", value: undefined, defaultValue });
+        const packageName = createWidgetName({ packageNameType: "label", value: undefined, defaultValue });
 
-        expect(badge.text()).toBe(defaultValue);
+        expect(packageName.text()).toBe(defaultValue);
     });
 
     it("should show no value when no value or default value provided", () => {
-        const badge = createWidgetName({ badgeType: "label", value: undefined });
+        const packageName = createWidgetName({ packageNameType: "label", value: undefined });
 
-        expect(badge.text()).toBe("");
+        expect(packageName.text()).toBe("");
     });
 
     it("configured as a label should have the class label", () => {
-        const badge = createWidgetName({ badgeType: "label" });
+        const packageName = createWidgetName({ packageNameType: "label" });
 
-        expect(badge.hasClass("label")).toBe(true);
+        expect(packageName.hasClass("label")).toBe(true);
     });
 
-    it("configured as a badge should have the class badge", () => {
-        const badge = createWidgetName({ badgeType: "badge" });
+    it("configured as a packageName should have the class packageName", () => {
+        const packageName = createWidgetName({ packageNameType: "label" });
 
-        expect(badge.hasClass("badge")).toBe(true);
+        expect(packageName.hasClass("badge")).toBe(true);
     });
 
     it("with a click action should respond to click events", () => {
-        const badgeProps: WidgetNameProps = { onClickAction: jasmine.createSpy("onClick"), badgeType: "badge" };
-        const onClick = badgeProps.onClickAction = jasmine.createSpy("onClick");
-        const badge = createWidgetName(badgeProps);
+        const packageNameProp: WidgetNameProps = { onClickAction: jasmine.createSpy("onClick"), : "badge" };
+        const onClick = packageNameProp.onClickAction = jasmine.createSpy("onClick");
+        const packageName = createWidgetName(packageNameProp);
 
-        badge.simulate("click");
+        packageName.simulate("click");
 
         expect(onClick).toHaveBeenCalledTimes(1);
     });
 
     it("with the Bootstrap style default should have the class label-default", () => {
-        const badge = createWidgetName({ bootstrapStyle: "default", badgeType: "badge" });
+        const packageName = createWidgetName({ bootstrapStyle: "default", : "badge" });
 
-        expect(badge.hasClass("label-default")).toBe(true);
+        expect(packageName.hasClass("label-default")).toBe(true);
     });
 
     it("with the Bootstrap style primary should have the class label-primary", () => {
-        const badge = createWidgetName({ bootstrapStyle: "primary", badgeType: "badge" });
+        const badge = createWidgetName({ bootstrapStyle: "primary", : "badge" });
 
         expect(badge.hasClass("label-primary")).toBe(true);
     });
 
     it("with the Bootstrap style success should have the class label-success", () => {
-        const badge = createWidgetName({ bootstrapStyle: "success", badgeType: "badge" });
+        const badge = createWidgetName({ bootstrapStyle: "success", : "badge" });
 
         expect(badge.hasClass("label-success")).toBe(true);
     });
 
     it("with the Bootstrap style info should have the class label-info", () => {
-        const badge = createWidgetName({ bootstrapStyle: "info", badgeType: "badge" });
+        const badge = createWidgetName({ bootstrapStyle: "info", : "badge" });
 
         expect(badge.hasClass("label-info")).toBe(true);
     });
 
     it("with the Bootstrap style warning should have the class label-warning", () => {
-        const badge = createWidgetName({ bootstrapStyle: "warning", badgeType: "badge" });
+        const badge = createWidgetName({ bootstrapStyle: "warning", : "badge" });
 
         expect(badge.hasClass("label-warning")).toBe(true);
     });
 
     it("with the Bootstrap style danger should have the class label-danger", () => {
-        const badge = createWidgetName({ bootstrapStyle: "danger", badgeType: "badge" });
+        const packageName = createWidgetName({ bootstrapStyle: "danger", packageNameType: "label" });
 
-        expect(badge.hasClass("label-danger")).toBe(true);
+        expect(packageName.hasClass("label-danger")).toBe(true);
     });
 });

@@ -5,25 +5,24 @@
   "description": "<%- description %>",
   "copyright": "<%- copyright %>",
   "author": "<%- author %>",
+  "config": { "widgetPath": "./dist/MxTestProject/widgets" },
   "scripts": {
-    "clean": "rimraf dist/tmp",
-    "start": "webpack-dev-server --hot --open",
-    "emit": "tsc",
-    "postbuild": "node crosszip-config.js",
-    "prebuild": "npm run clean",
-    "pretest": "tsc && npm run lint && npm run build"<% if (unitTests) { %>,
+    "start": "nodemon --watch webpack.config.js --watch Gruntfile.js --exec \"grunt",
+    "start:dev": "webpack-dev-server --hot --open",
+    "emit": "tsc",<% if (unitTests || e2eTests) { %>,
+    "pretest": "tsc && npm run lint && npm run build",<% } %><% if (unitTests) { %>,
     "test": "npm run test:unit && npm run test:conditional",
     "test:conditional": "node ./node_modules/mendix-widget-build-script/dist/CheckPullRequestFromFork.js && echo 'Skip tests on forked pull request' || npm run deployAndTest",
     "test:dev": "karma start",
-    "test:unit": "karma start --single-run --codeCoverage && node tests/remap.js"<% } %>,<% if (e2eTests) { %>
+    "test:unit": "karma start --single-run --codeCoverage && node tests/remap.js",<% } %><% if (e2eTests) { %>
     "test:e2e": "tsc -p ./tests/e2e/tsconfig.json && wdio ./tests/e2e/wdio.conf.js",
     "test:e2e:dev": "tsc -p ./tests/e2e/tsconfig.json && set DEBUG=true&& wdio ./tests/e2e/wdio.conf.js",<% } %>
     "lint": "tslint -c tslint.json '**/*.ts' '**/*.tsx' --exclude '**/node_modules/**'",
-    "build": "webpack",
-    "lint:fix": "npm run lint -- --fix"<% if (e2eTests) { %>,
+    "build": "grunt release",
+    "lint:fix": "npm run lint -- --fix",
     "deploy": " npm run updateProject && npm run deployApp",
     "updateProject": "node ./node_modules/mendix-widget-build-script/dist/UpdateMxProject.js",
-    "deployApp": "node ./node_modules/mendix-widget-build-script/dist/DeployMxApp.js",
+    "deployApp": "node ./node_modules/mendix-widget-build-script/dist/DeployMxApp.js"<% if (e2eTests) { %>,
     "deployAndTest": "npm run deploy && npm run test:e2e"<% } %>
   },
   "pre-commit": [
@@ -32,10 +31,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mendixlabs/<%packageName %>"
-  },
-  "bugs": {
-    "url": "https://github.com/mendixlabs/<%packageName %>/issues"
+    "url": "https://github.com/<%- author %>/<%- packageName %>"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
@@ -48,7 +44,6 @@
     "@types/webdriverio": "^4.10.2",<% } %><% if (unitTests || e2eTests) { %>
     "@types/enzyme": "^3.1.10",
     "@types/enzyme-adapter-react-16": "^1.0.2",<% } %>
-    "@types/rimraf": "^2.0.2",
     "@types/globalize": "0.0.34",<% if (unitTests) { %>
     "@types/jasmine": "^2.8.9",
     "@types/karma": "^3.0.0",<% } %>
@@ -60,13 +55,11 @@
     "check-dependencies": "^1.1.0",
     "copy-webpack-plugin": "^4.5.3",
     "core-js": "^2.5.7",
-    "cross-zip-cli": "^1.0.0",
     "css-loader": "^1.0.0",<% if (unitTests || e2eTests) { %>
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.1",<% } %>
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^2.0.0",
-    "filemanager-webpack-plugin": "^2.0.5",
     "fork-ts-checker-webpack-plugin": "^0.4.10",
     "grunt": "^1.0.3",
     "grunt-check-dependencies": "^1.0.0",
@@ -97,7 +90,6 @@
     "nodemon": "^1.17.3",
     "pre-commit": "^1.2.2",
     "raw-loader": "^0.5.1",
-    "rimraf": "^2.6.2",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-hot-loader": "^4.3.11",

@@ -54,6 +54,22 @@ function promptsNew() {
   },
   {
     type: "list",
+    name: "builder",
+    message: "Which task runner do you want to use for development?",
+    choices: [
+      {
+        name: "Grunt (recommended)",
+        value: "grunt"
+      },
+      {
+        name: "Gulp",
+        value: "gulp"
+      }
+    ],
+    default: 0
+  },
+  {
+    type: "list",
     name: "boilerplate",
     message: "Which template do you want to use for the widget?",
     choices: [

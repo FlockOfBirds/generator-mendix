@@ -1,9 +1,8 @@
 const path = require("path");
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const FileManagerPlugin = require("filemanager-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const package = require("./package");
 const widgetName = package.widgetName;
@@ -13,13 +12,13 @@ const widgetConfig = {
     entry: `./src/components/${widgetName}Container.ts`,
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: `src/com/mendix/widget/custom/${name}/${widgetName}.js`,
+        filename: `widgets/com/mendix/widget/custom/${name}/${widgetName}.js`,
         libraryTarget: "umd"
     },
     devServer: {
         port: 3000,
         proxy: [ {
-            context: [ "**", `!/com/mendix/widget/custom/${name}/${widgetName}.js` ],
+            context: [ "**", `!/widgets/com/mendix/widget/custom/${name}/${widgetName}.js` ],
             target: "http://localhost:8080"
         } ]
     },
@@ -60,11 +59,7 @@ const widgetConfig = {
                     use: [ "css-loader", "sass-loader" ]
                 })
             },
-            {
-                test: /\.(css|scss)$/, use: [
-                    "css-loader", "sass-loader"
-                ]
-            },
+            { test: /\.(css|scss)$/, use: [ "css-loader", "sass-loader" ] },
             { test: /\.png$/, loader: "url-loader?limit=100000" },
             { test: /\.jpg$/, loader: "file-loader" },
             {
@@ -82,7 +77,7 @@ const widgetConfig = {
             }
         ]
     },
-    devtool: "eval",
+    devtool: "source-map",
     mode: "development",
     externals: [ "react", "react-dom" ],
     plugins: [
@@ -95,20 +90,7 @@ const widgetConfig = {
             } ],
             { copyUnmodified: true }
         ),
-        new ExtractTextPlugin({
-            filename: `./src/com/mendix/widget/custom/${name}/ui/${widgetName}.css`
-        }),
-        new FileManagerPlugin({
-            onEnd: {
-                mkdir: [
-                    `./dist/${package.version}`,
-                    "./dist/MxTestProject/widgets"
-                ]
-            }
-        }),
-        new webpack.LoaderOptionsPlugin({
-            debug: true
-        })
+        new webpack.LoaderOptionsPlugin({ debug: true })
     ]
 };
 
@@ -116,21 +98,19 @@ const previewConfig = {
     entry: `./src/${widgetName}.webmodeler.ts`,
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
-        filename: `src/${widgetName}.webmodeler.js`,
+        filename: `widgets/${widgetName}.webmodeler.js`,
         libraryTarget: "commonjs"
     },
     resolve: {
         extensions: [ ".ts", ".js" ]
     },
     module: {
-        rules: [ {
-                test: /\.(ts|tsx)?$/,
-                use: [
-                    {
-                        loader: "ts-loader"
-                    }
-                ]
-            },
+        rules: [
+            { test: /\.(ts|tsx)?$/, loader: "ts-loader", options: {
+                compilerOptions: {
+                    "module": "CommonJS",
+                }
+            }},
             { test: /\.css$/, use: "raw-loader" },
             { test: /\.scss$/, use: [
                     { loader: "raw-loader" },
@@ -142,9 +122,7 @@ const previewConfig = {
     mode: "development",
     devtool: "inline-source-map",
     externals: [ "react", "react-dom" ],
-    plugins: [
-      new webpack.LoaderOptionsPlugin({ debug: true })
-    ]
+    plugins: [ new webpack.LoaderOptionsPlugin({ debug: true }) ]
 };
 
 module.exports = [ widgetConfig, previewConfig ];

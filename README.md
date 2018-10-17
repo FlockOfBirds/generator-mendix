@@ -110,6 +110,13 @@ To use the webpack-dev-server while in your development;
 npm run start:dev
 ```
 
+To change the widget build path; 
+
+```bash
+npm config set module-name:foo 
+```
+where `module-name` is the package.name from your `package.json` file
+
 ## Issues
 
 Issues can be reported on [Github](https://github.com/mendix/generator-mendix/issues).

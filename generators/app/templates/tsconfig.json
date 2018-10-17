@@ -7,11 +7,10 @@
     "module": "amd",
     "target": "es5",
     "lib": [ "es2015", "dom" ],
-
     "types": [
       "mendix-client",<% if (unitTests || e2eTests) { %>
-      "jasmine",<% } %>
-      "core-js"
+      "jasmine"<% } %><% if (boilerplate === "badgeWidgetBoilerPlate") { %>
+      "core-js"<% } %>
     ],
     "moduleResolution": "node",
     "declaration": false,
