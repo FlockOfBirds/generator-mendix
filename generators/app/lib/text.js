@@ -33,6 +33,10 @@ module.exports = {
     ' before I can run the build using ' +
     chalk.cyan('npm run build') +
     ' < \n\n',
+  END_RUN_BUILD_MSG_PATH:
+    '\n\n> I will now run ' +
+    chalk.cyan('npm config set') +
+    ' to set your widget path (change this path based on you configurations)) \n\n',
   END_RUN_BUILD_MSG:
     '\n\n> I will now run ' +
     chalk.cyan('npm run build') +

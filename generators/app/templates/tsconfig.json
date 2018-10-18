@@ -9,8 +9,9 @@
     "lib": [ "es2015", "dom" ],
     "types": [
       "mendix-client",<% if (unitTests || e2eTests) { %>
-      "jasmine"<% } %><% if (boilerplate === "badgeWidgetBoilerPlate") { %>
-      "core-js"<% } %>
+      "jasmine",<% } %>
+      "core-js",
+      "node"
     ],
     "moduleResolution": "node",
     "declaration": false,
