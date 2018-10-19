@@ -74,8 +74,8 @@ function promptsNew() {
     message: "Which template do you want to use for the widget?",
     choices: [
       {
-        name: "BadgeWidgetBoilerplate (recommended for beginners)",
-        value: "badgeWidgetBoilerPlate"
+        name: "FullwidgetBoilerplate (recommended for beginners)",
+        value: "fullWidgetBoilerPlate"
       },
       {
         name: "Empty widget (recommended for more experienced developers)",
@@ -87,13 +87,13 @@ function promptsNew() {
   {
     type: "confirm",
     name: "unitTests",
-    message: "Add unit tests for the widget ? (recommended for BadgeWidgetBoilerplate)",
+    message: "Add unit tests for the widget ? (recommended for FullWidgetBoilerplate)",
     default: false
   },
   {
     type: "confirm",
     name: "e2eTests",
-    message: "Add End-to-end tests for the widget ? (recommended for BadgeWidgetBoilerplate)",
+    message: "Add End-to-end tests for the widget ? (recommended for FullWidgetBoilerplate)",
     default: false
   }];
 }

@@ -1,3 +1,6 @@
-[submodule "generators/app/templates/AppStoreWidgetBoilerplate"]
-	path = generators/app/templates/AppStoreWidgetBoilerplate
-	url = https://github.com/mendix/AppStoreWidgetBoilerplate.git
+[submodule "generators/app/templates/fullWidgetBoilerplate"]
+	path = generators/app/templates/fullWidgetBoilerplate
+	url = https://github.com/jseremba/fullWidgetBoilerplate
+[submodule "generators/app/templates/emptyWidgetBoilerplate"]
+	path = generators/app/templates/emptyWidgetBoilerplate
+	url = https://github.com/jseremba/emptyWidgetBoilerplate

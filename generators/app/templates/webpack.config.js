@@ -2,7 +2,6 @@ const path = require("path");
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const package = require("./package");
 const widgetName = package.widgetName;
@@ -13,7 +12,7 @@ const widgetConfig = {
     output: {
         path: path.resolve(__dirname, "dist/tmp"),
         filename: `widgets/com/mendix/widget/custom/${name}/${widgetName}.js`,
-        libraryTarget: "umd"
+        libraryTarget: "umd",
     },
     devServer: {
         port: 3000,
@@ -41,7 +40,7 @@ const widgetConfig = {
                         presets: [
                             [
                                 "@babel/preset-env",
-                                { targets: { browsers: "last 2 versions" } }
+                                { targets: { browsers: "last 2 versions" } } // or whatever your project requires
                             ],
                             "@babel/preset-typescript",
                             "@babel/preset-react"
@@ -54,12 +53,10 @@ const widgetConfig = {
                 }
             },
             {
-                test: /\.css$/, loader: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: [ "css-loader", "sass-loader" ]
-                })
+                test: /\.(css|scss)$/, use: [
+                    "style-loader", "css-loader", "sass-loader"
+                ]
             },
-            { test: /\.(css|scss)$/, use: [ "css-loader", "sass-loader" ] },
             { test: /\.png$/, loader: "url-loader?limit=100000" },
             { test: /\.jpg$/, loader: "file-loader" },
             {
@@ -77,7 +74,7 @@ const widgetConfig = {
             }
         ]
     },
-    devtool: "source-map",
+    devtool: "eval",
     mode: "development",
     externals: [ "react", "react-dom" ],
     plugins: [
@@ -106,7 +103,7 @@ const previewConfig = {
     },
     module: {
         rules: [
-            { test: /\.(ts|tsx)?$/, loader: "ts-loader", options: {
+            { test: /\.ts$/, loader: "ts-loader", options: {
                 compilerOptions: {
                     "module": "CommonJS",
                 }
@@ -122,7 +119,9 @@ const previewConfig = {
     mode: "development",
     devtool: "inline-source-map",
     externals: [ "react", "react-dom" ],
-    plugins: [ new webpack.LoaderOptionsPlugin({ debug: true }) ]
+    plugins: [
+        new webpack.LoaderOptionsPlugin({ debug: true })
+    ]
 };
 
 module.exports = [ widgetConfig, previewConfig ];

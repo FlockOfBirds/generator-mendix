@@ -113,7 +113,7 @@ npm run start:dev
 To change the widget build path; 
 
 ```bash
-npm config set module-name:widgetPath 
+npm config set module-name:widgetPath `path-to-your-widget-build`
 ```
 where `module-name` is the package.name from your `package.json` file
 

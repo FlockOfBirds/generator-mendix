@@ -1,12 +1,13 @@
 "use strict";
 const webpackConfig = require("./webpack.config");
 const merge = require("webpack-merge");
+const path = require("path");
 
 const packageJson = require("./package.json");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const widgetName = packageJson.widgetName;
 const name = packageJson.widgetName.toLowerCase();
-const widgetPath = `"${process.env.npm_package_config_widgetPath}"`;
+const widgetPath = path.join(__dirname, process.env.npm_package_config_widgetPath);
 
 const webpackConfigRelease = webpackConfig.map(config => merge(config, {
     devtool: false,
@@ -92,7 +93,7 @@ module.exports = function(grunt) {
                 "./dist/tsc/**/*",
                 "./dist/testresults/**/*",
                 "./dist/MxTestProject/deployment/web/widgets/" + pkg.widgetName + "/*",
-                widgetPath + pkg.widgetName + ".mpk"
+                widgetPath + "/" + pkg.widgetName + ".mpk"
             ]
         },
 

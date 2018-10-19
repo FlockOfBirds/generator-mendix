@@ -24,7 +24,7 @@ module.exports = {
   ),
 
   INSTALL_FINISH_MSG:
-    'Copied files, now running ' +
+    'File configuration done, now running ' +
     chalk.cyan('npm install') +
     ' to install development dependencies',
   END_NPM_NEED_INSTALL_MSG:
@@ -34,7 +34,7 @@ module.exports = {
     chalk.cyan('npm run build') +
     ' < \n\n',
   END_RUN_BUILD_MSG_PATH:
-    '\n\n> I will now run ' +
+    '\n> Copied files, now running ' +
     chalk.cyan('npm config set') +
     ' to set your widget path (change this path based on you configurations)) \n\n',
   END_RUN_BUILD_MSG:
