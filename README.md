@@ -71,33 +71,35 @@ Earlier versions of the widget generator added Grunt as the default taskrunner. 
 
 ### 2.2. Which template do you want to use for the widget?
 
-#### BadgeWidgetBoilerplate
+#### FullWidgetBoilerplate
 
-The badge boiler plate is a react fully developed mendix widget that shows a value as a badge or a color label and is recommended for beginners. It has the following features:-
+The full widget boiler plate is a react fully developed and tested mendix widget that shows a value as a badge or a color label.
+It has the following features:-
 
 * Display as a badge or a color label
-* Attach an onclick microflow and nanoflow
+* Attach a microflow and nanoflow action
 * Set static data text when the dynamic data is not specified
 
 #### Empty widget
 
 The empty template is a mendix react hello world widget recommended for more experienced developers.
 
-Note: all boilerplate are designed based on typescript .tsx file extension.
-With .tsx files allow usae of all the JSX (JavaScript XML) code, JSX is an embeddable XML-like syntax. It is meant to be transformed into valid JavaScript. In order to use JSX you must do two things.
+### 2.3 Enable plugin widget ?
 
-* Create files with a .tsx extension
-* Enable the jsx from compiler options (tsconfig.json)
+If `Yes` the generated widget whether full or empty boilerplate will be plugin widget supported.
 
-### 2.3 Add unit tests for the widget ?
+### 2.4 Add unit tests for the widget ?
 
 If `Yes` is selected, unit tests are included to ensure individual units of the component are tested to determine whether they are fit for use. Default value is `No`.
 
-### 2.4 Add end to end tests for the widget ?
+### 2.5 Add end to end tests for the widget ?
 
 If Yes is selected, end to end tests are included to ensure that the integrated components of an application function as expected. default value is `No`.
 
-Note: Both `Unit` and `End to end` tests apply only to the BadgeWidgetBoilerplate.
+Note: Both `Unit` and `End to end` tests apply only to the FullWidgetBoilerplate.
+
+The generator will then configure `widget-path` this is the path to the widget build folder by the mendix modeler at run time.
+This path can as well be changed depending on the user development structure.
 
 The tool will then create Copied files, and run `npm install` to install development dependencies.
 

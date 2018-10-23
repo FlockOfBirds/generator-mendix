@@ -13,6 +13,8 @@ const text = require("./lib/text.js");
 
 const boilerPlatePath = "fullWidgetBoilerplate/",
   emptyBoilerplatePath = "emptyWidgetBoilerplate/",
+  fullPluginPath = "plugin/fullWidgetBoilerplate/",
+  emptyPluginPath = "plugin/emptyWidgetBoilerplate/",
   widgetSrcFolder = "src/components/";
 
 const banner = text.getBanner(pkg);
@@ -132,7 +134,7 @@ module.exports = class extends Generator {
 
   _defineProperties() {
     this.widget = {};
-    this.widget.widgetName = this.props.widgetName;
+    this.widget.widgetName = this.props.widgetName.replace(/(^|\s)\S/g, l => l.toUpperCase()); // Capitalise first letter if its not.
     this.widget.packageName = this.props.widgetName.toLowerCase();
     this.widget.description = this.props.description || this.current.description;
     this.widget.version = this.props.version;
@@ -141,12 +143,16 @@ module.exports = class extends Generator {
     this.widget.license = this.props.license || this.current.license;
     this.widget.e2eTests = this.props.e2eTests;
     this.widget.unitTests = this.props.unitTests;
+    this.widget.pluginWidget = this.props.pluginWidget;
     this.widget.generatorVersion = pkg.version;
     this.widget.builder = this.props.builder;
     this.widget.boilerplate = this.props.boilerplate;
-    this.widget.source = this.props.boilerplate === "fullWidgetBoilerPlate"
-        ? boilerPlatePath
-        : emptyBoilerplatePath;
+    this.widget.source = "";
+    if (this.props.pluginWidget) {
+      this.widget.source = this.props.boilerplate === "fullWidgetBoilerPlate" ? fullPluginPath : emptyPluginPath;
+    } else {
+      this.widget.source = this.props.boilerplate === "fullWidgetBoilerPlate" ? boilerPlatePath : emptyBoilerplatePath;
+    }
   }
 
   _copyFiles(path, dest) {
@@ -168,7 +174,18 @@ module.exports = class extends Generator {
       ? this._copyFiles("Gulpfile.js", "Gulpfile.js")
       : this._copyFiles("Gruntfile.js", "Gruntfile.js");
     if (this.widget.e2eTests || this.widget.unitTests) {
-      this._copyFiles(this.widget.source + "typings/", "typings/");
+      this.fs.copy(this.templatePath(this.widget.source + "typings/customMatchers.d.ts"),
+        this.destinationPath("typings/customMatchers.d.ts")
+      );
+      this.fs.copy(this.templatePath(this.widget.source + "typings/jasmine.d.ts"),
+        this.destinationPath("typings/jasmine.d.ts")
+      );
+      this.fs.copy(this.templatePath(this.widget.source + "tests/matchers.ts"), this.destinationPath("tests/matchers.ts"));
+      this.fs.copy(this.templatePath(this.widget.source + "tests/remap.js.ejs"), this.destinationPath("tests/remap.js.ejs"));
+      this.fs.copy(this.templatePath(this.widget.source + "tests/test-index.js"), this.destinationPath("tests/test-index.js"));
+      this.fs.copy(this.templatePath(this.widget.source + "tests/helpers/structureMatcher.ts"),
+        this.destinationPath("tests/helpers/structureMatcher.ts")
+      );
     }
   }
 
@@ -207,7 +224,9 @@ module.exports = class extends Generator {
       this._copyWidgetFiles(this.widget.source + `${widgetSrcFolder}Alert.ts.ejs`,
         `${widgetSrcFolder}Alert.ts`
       );
-      this._copyWidgetFiles(this.widget.source + "test-project/Test.mpr", "dist/MxTestProject/Test.mpr");
+    }
+    if (this.widget.pluginWidget) {
+      this._copyWidgetFiles(this.widget.source + "typings/PluginWidget.d.ts", "typings/PluginWidget.d.ts");
     }
   }
 
@@ -258,17 +277,12 @@ module.exports = class extends Generator {
   }
 
   _copyUnitTests() {
-    const { boilerplate } = this.props;
     const widgetName = this.widget.widgetName;
 
     if (this.widget.unitTests) {
       this.fs.copy(
-        this.templatePath(
-          this.widget.source + "src/components/__tests__/WidgetName.spec.ts.ejs"
-        ),
-        this.destinationPath(
-          "src/components/__tests__/" + widgetName + ".spec.ts"
-        ),
+        this.templatePath(this.widget.source + "src/components/__tests__/WidgetName.spec.ts.ejs"),
+        this.destinationPath("src/components/__tests__/" + widgetName + ".spec.ts"),
         {
           process: function(file) {
             var fileText = file.toString();
@@ -280,15 +294,12 @@ module.exports = class extends Generator {
         }
       );
 
-      if (boilerplate !== "empty") {
-        this._copyTestFiles(
-          this.widget.source + "src/components/__tests__/Alert.spec.ts.ejs",
-          "src/components/__tests__/Alert.spec.ts"
+      if (this.widget.boilerplate !== "empty") {
+        this.fs.copy(
+          this.templatePath(this.widget.source + "src/components/__tests__/Alert.spec.ts.ejs"),
+          this.destinationPath("src/components/__tests__/Alert.spec.ts")
         );
       }
-
-      this._copyTestFiles("tests/remap.js.ejs", "tests/remap.js");
-      this._copyTestFiles("tests/", "tests/");
     }
   }
 

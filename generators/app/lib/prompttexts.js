@@ -10,7 +10,7 @@ function promptsNew() {
       if (/^([a-zA-Z]*)$/.test(input)) { return true; }
       return "Your widget can only contain letters (a-z & A-Z). Please provide a valid name";
     },
-    message: "What is name of your widget?",
+    message: "What is the name of your widget?",
     default: "Badge"
   },
   {
@@ -83,6 +83,12 @@ function promptsNew() {
       }
     ],
     store: true
+  },
+  {
+    type: "confirm",
+    name: "pluginWidget",
+    message: "Enable plugin widget ?",
+    default: false
   },
   {
     type: "confirm",
