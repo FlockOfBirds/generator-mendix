@@ -119,6 +119,22 @@ npm config set module-name:widgetPath `path-to-your-widget-build`
 ```
 where `module-name` is the package.name from your `package.json` file
 
+### Template installation
+
+To configure widget templates and paths run the following command within your terminal to help clone the widget template within the generator;
+
+#### For a fully designed widget template
+```bash
+git submodule add https://github.com/jseremba/fullWidgetBoilerplate generators/app/templates/fullWidgetBoilerplate
+```
+Where `generators/app/templates/fullWidgetBoilerplate` is the path to template destination.
+
+#### For an empty widget template
+```bash
+git submodule add https://github.com/jseremba/emptyWidgetBoilerplate generators/app/templates/emptyWidgetBoilerplate
+```
+Where `generators/app/templates/emptyWidgetBoilerplate` is the path to template destination.
+
 ## Issues
 
 Issues can be reported on [Github](https://github.com/mendix/generator-mendix/issues).
