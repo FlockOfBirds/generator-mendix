@@ -1,24 +1,24 @@
 /*jshint -W108,-W069*/
-'use strict';
+"use strict";
 
-const pkg = require(__dirname + '/../../package.json');
-const fs = require('fs');
-const extfs = require('extfs');
+const pkg = require(__dirname + "/../../package.json");
+const fs = require("fs");
+const extfs = require("extfs");
 const xml2js = require("xml2js");
 const parser = new xml2js.Parser();
-const Generator = require('yeoman-generator');
+const Generator = require("yeoman-generator");
 
-const promptTexts = require('./lib/prompttexts.js');
-const text = require('./lib/text.js');
+const promptTexts = require("./lib/prompttexts.js");
+const text = require("./lib/text.js");
 
-const boilerPlatePath = 'AppStoreWidgetBoilerplate/',
-      emptyBoilerplatePath = 'WidgetBoilerplate/';
+const boilerPlatePath = "BadgeWidgetBoilerplate/",
+  emptyBoilerplatePath = "EmptyWidgetBoilerplate/";
 
 const banner = text.getBanner(pkg);
+const widgetSrcFolder = "src/components/";
 
 module.exports = class extends Generator {
-
-  constructor(args, opts) {
+  constructor (args, opts) {
     super(args, opts);
   }
 
@@ -30,44 +30,59 @@ module.exports = class extends Generator {
 
     this.folders = extfs.getDirsSync(this.destinationRoot());
     this.current = {};
-    this.current.version = '1.0.0';
-    this.current.name = 'CurrentWidget';
+    this.current.version = "1.0.0";
+    this.current.name = "CurrentWidget";
 
-    if (this.folders.indexOf('src') !== -1) {
-      const srcFolderContent = extfs.getDirsSync(this.destinationPath('src'));
+    if (this.folders.indexOf("src") !== -1) {
+      const srcFolderContent = extfs.getDirsSync(this.destinationPath("src"));
       if (srcFolderContent.length === 1) {
         this.current.name = srcFolderContent[0];
       }
-      if (!extfs.isEmptySync(this.destinationPath('package.json'))) {
+
+      if (!extfs.isEmptySync(this.destinationPath("package.json"))) {
         try {
-          const destPkg = JSON.parse(fs.readFileSync(this.destinationPath('package.json')).toString());
+          const destPkg = JSON.parse(
+            fs.readFileSync(this.destinationPath("package.json")).toString()
+          );
           this.current.description = destPkg.description;
           this.current.author = destPkg.author;
           this.current.copyright = destPkg.copyright;
           this.current.license = destPkg.license;
-          this.current.builder = typeof destPkg.devDependencies.grunt !== "undefined" ? 'grunt' : 'gulp';
+          this.current.builder = typeof destPkg.devDependencies.grunt !== "undefined"
+              ? "grunt"
+              : "gulp";
         } catch (e) {
           console.error(text.PACKAGE_READ_ERROR + e.toString());
-          this.FINISHED = true; done(); return;
+          this.FINISHED = true;
+          done();
+          return;
         }
       }
-      if (!extfs.isEmptySync(this.destinationPath('src/package.xml'))) {
+
+      if (!extfs.isEmptySync(this.destinationPath("src/package.xml"))) {
         this.isNew = false;
-        const pkgXml = fs.readFileSync(this.destinationPath('src/package.xml')).toString();
-        parser.parseString(pkgXml, function (err, result) {
-          if (err) {
-            this.log('Error: ' + err);
-            this.FINISHED = true; done(); return;
-          }
-          if (result.package.clientModule[0]["$"]["version"]) {
-            let version = result.package.clientModule[0]["$"]["version"];
-            if (version.split(".").length === 2) {
-              version += ".0";
+        const pkgXml = fs
+          .readFileSync(this.destinationPath("src/package.xml"))
+          .toString();
+        parser.parseString(
+          pkgXml,
+          function (err, result) {
+            if (err) {
+              this.log("Error: " + err);
+              this.FINISHED = true;
+              done();
+              return;
             }
-            this.current.version = version;
-          }
-          done();
-        }.bind(this));
+            if (result.package.clientModule[0]["$"]["version"]) {
+              let version = result.package.clientModule[0]["$"]["version"];
+              if (version.split(".").length === 2) {
+                version += ".0";
+              }
+              this.current.version = version;
+            }
+            done();
+          }.bind(this)
+        );
       } else {
         this.isNew = false;
         done();
@@ -84,7 +99,6 @@ module.exports = class extends Generator {
 
   prompting() {
     const done = this.async();
-
     if (this.FINISHED) {
       done();
       return;
@@ -94,23 +108,23 @@ module.exports = class extends Generator {
     this.log(banner);
 
     if (this.isNew) {
-      this
-        .prompt(promptTexts.promptsNew())
-        .then(function (props) {
+      this.prompt(promptTexts.promptsNew()).then(
+        function (props) {
           this.props = props;
           done();
-        }.bind(this));
+        }.bind(this)
+      );
     } else {
-      this
-        .prompt(promptTexts.promptsUpgrade(this.current))
-        .then(function (props) {
+      this.prompt(promptTexts.promptsUpgrade(this.current)).then(
+        function (props) {
           this.props = props;
           if (!props.upgrade) {
             process.exit(0);
           } else {
             done();
           }
-        }.bind(this));
+        }.bind(this)
+      );
     }
   }
 
@@ -122,111 +136,177 @@ module.exports = class extends Generator {
     // Define widget variables
     this.widget = {};
     this.widget.widgetName = this.props.widgetName;
-    this.widget.packageName = this.props.widgetName;
+    this.widget.packageName = this.props.widgetName.toLowerCase();
     this.widget.description = this.props.description || this.current.description;
     this.widget.version = this.props.version;
     this.widget.author = this.props.author || this.current.author;
-    this.widget.date = (new Date()).toLocaleDateString();
+    this.widget.date = new Date().toLocaleDateString();
     this.widget.copyright = this.props.copyright || this.current.copyright;
     this.widget.license = this.props.license || this.current.license;
+    this.widget.e2eTests = this.props.e2eTests;
+    this.widget.unitTests = this.props.unitTests;
     this.widget.generatorVersion = pkg.version;
 
     this.widget.builder = this.props.builder;
 
     if (this.isNew) {
-      const source = this.props.boilerplate === 'appstore' ? boilerPlatePath : emptyBoilerplatePath;
-      this.props.widgetOptionsObj = {};
-      if (this.props.boilerplate === 'empty') {
-        for (let i = 0; i < this.props.widgetoptions.length; i++) {
-          this.props.widgetOptionsObj[this.props.widgetoptions[i]] = true;
-        }
-      }
+      const source = this.props.boilerplate === "badgeWidgetBoilerPlate" ? boilerPlatePath : emptyBoilerplatePath;
+
+      // Define generic files to be copied
+      const genericFiles = [
+        { fileSource: "README.md", destination: "README.md" },
+        { fileSource: "xsd/widget.xsd", destination: "xsd/widget.xsd" }
+      ];
+
+      // Define widget files to be copied
+      const widgetFiles = [
+        {
+          fileSource: `${widgetSrcFolder}WidgetName.tsx.ejs`,
+          destination: `${widgetSrcFolder}${this.widget.widgetName}.tsx`
+        },
+        {
+          fileSource: `${widgetSrcFolder}WidgetNameContainer.tsx.ejs`,
+          destination: `${widgetSrcFolder}${this.widget.widgetName}Container.tsx`
+        },
+        { fileSource: `${widgetSrcFolder}Alert.tsx.ejs`, destination: `${widgetSrcFolder}Alert.tsx` },
+        { fileSource: "src/WidgetName.webmodeler.tsx.ejs", destination: "src/" + this.widget.widgetName + ".webmodeler.tsx" },
+        { fileSource: "src/ui/WidgetName.css", destination: "src/ui/" + this.widget.widgetName + ".css" },
+        { fileSource: "src/WidgetName.xml", destination: "src/" + this.widget.widgetName + ".xml" }
+      ];
 
       // Copy generic files
-      this.fs.copy(this.templatePath('icon.png'), this.destinationPath('icon.png'));
-      this.fs.copy(this.templatePath(boilerPlatePath + 'assets/app_store_banner.png'), this.destinationPath('assets/app_store_banner.png'));
-      this.fs.copy(this.templatePath(boilerPlatePath + 'assets/app_store_icon.png'), this.destinationPath('assets/app_store_icon.png'));
-      //this.fs.copy(this.templatePath(source + 'LICENSE'), this.destinationPath('LICENSE'));
-      this.fs.copy(this.templatePath(source + 'README.md'), this.destinationPath('README.md'));
-      this.fs.copy(this.templatePath(boilerPlatePath + 'test/Test.mpr'), this.destinationPath('test/Test.mpr'));
-      this.fs.copy(this.templatePath(boilerPlatePath + 'xsd/widget.xsd'), this.destinationPath('xsd/widget.xsd'));
-
-      // Copy files based on WidgetName
-
-      if (this.props.boilerplate === 'appstore' || this.props.widgetOptionsObj.jquery) {
+      genericFiles.forEach(file => {
         this.fs.copy(
-          this.templatePath(boilerPlatePath + 'src/WidgetName/lib/jquery-1.11.2.js'),
-          this.destinationPath('src/' + this.widget.widgetName + '/lib/jquery-1.11.2.js')
+          this.templatePath(source + file.fileSource),
+          this.destinationPath(file.destination)
         );
-      }
+      });
 
-      if (this.props.boilerplate === 'appstore' || this.props.widgetOptionsObj.templates) {
+      // Copy widget files based on WidgetName
+      widgetFiles.forEach(file => {
         this.fs.copy(
-          this.templatePath(source + 'src/WidgetName/widget/template/WidgetName.html'),
-          this.destinationPath('src/' + this.widget.widgetName + '/widget/template/' + this.widget.widgetName + '.html')
-        );
-      }
-
-      this.fs.copy(
-        this.templatePath(source + 'src/WidgetName/widget/ui/WidgetName.css'),
-        this.destinationPath('src/' + this.widget.widgetName + '/widget/ui/' + this.widget.widgetName + '.css')
-      );
-
-      // Rename references in widget main JS
-      if (this.props.boilerplate === 'appstore') {
-        this.fs.copy(
-          this.templatePath(source + 'src/WidgetName/widget/WidgetName.js'),
-          this.destinationPath('src/' + this.widget.widgetName + '/widget/' + this.widget.widgetName + '.js'),
+          this.templatePath(source + file.fileSource),
+          this.destinationPath(file.destination),
           {
             process: function (file) {
-              let fileText = file.toString();
+              var fileText = file.toString();
               fileText = fileText
-                            .replace(/WidgetName\.widget\.WidgetName/g, this.widget.packageName + '.widget.' + this.widget.widgetName)
-                            .replace(/WidgetName\/widget\/WidgetName/g, this.widget.packageName + '/widget/' + this.widget.widgetName)
-                            .replace(/WidgetName/g, this.widget.widgetName)
-                            .replace(/\{\{version\}\}/g, this.widget.version)
-                            .replace(/\{\{date\}\}/g, this.widget.date)
-                            .replace(/\{\{copyright\}\}/g, this.widget.copyright)
-                            .replace(/\{\{license\}\}/g, this.widget.license)
-                            .replace(/\{\{author\}\}/g, this.widget.author);
+                .replace(/WidgetName/g, this.widget.widgetName)
+                .replace(/packageName/g, this.widget.packageName);
               return fileText;
             }.bind(this)
           }
         );
-      } else {
-        this.widget.options = this.props.widgetOptionsObj;
-        this.fs.copyTpl(
-          this.templatePath(source + 'src/WidgetName/widget/WidgetName.js.ejs'),
-          this.destinationPath('src/' + this.widget.widgetName + '/widget/' + this.widget.widgetName + '.js'),
-          this.widget
+      });
+
+      if (this.props.boilerplate !== "empty") {
+        // Copy MxTestProject
+        this.fs.copy(
+          this.templatePath(source + "dist/MxTestProject/Test.mpr"), this.destinationPath("dist/MxTestProject/Test.mpr")
         );
+
+        if (this.widget.unitTests | this.widget.e2eTests) {
+          // Copy tests folder
+          this.fs.copy(
+            this.templatePath(source + "tests/"), this.destinationPath("tests/")
+          );
+        }
+
+        // Copy tests folder
+        this.fs.copy(
+          this.templatePath(source + "typings/"), this.destinationPath("typings/"),
+          {
+            process: function (file) {
+              var fileText = file.toString();
+              fileText = fileText
+                .replace(/WidgetName/g, this.widget.widgetName)
+              return fileText;
+            }.bind(this)
+          }
+        );
+
+        // Copy unit tests based on WidgetName
+        if (this.widget.unitTests) {
+          this.fs.copy(
+            this.templatePath(source + "src/components/__tests__/WidgetName.spec.tsx.ejs"),
+            this.destinationPath("src/components/__tests__/" + this.widget.widgetName + ".spec.tsx"),
+            {
+              process: function (file) {
+                var fileText = file.toString();
+                fileText = fileText
+                  .replace(/WidgetName/g, this.widget.widgetName)
+                  .replace(/packageName/g, this.widget.packageName);
+                return fileText;
+              }.bind(this)
+            }
+          );
+
+          this.fs.copy(
+            this.templatePath(source + "src/components/__tests__/Alert.spec.tsx.ejs"),
+            this.destinationPath("src/components/__tests__/Alert.spec.tsx")
+          );
+
+          this.fs.copy(
+            this.templatePath(source + "tests/remap.js.ejs"), this.destinationPath("tests/remap.js")
+          );
+        }
+
+        // Copy end-to-end tests based on WidgetName
+        if (this.widget.e2eTests) {
+
+          this.fs.copy(
+            this.templatePath(source + "e2e/WidgetName.spec.ts.ejs"),
+            this.destinationPath("tests/e2e/" + this.widget.widgetName + ".spec.ts"),
+            {
+              process: function (file) {
+                var fileText = file.toString();
+                fileText = fileText.replace( /WidgetName/g, this.widget.widgetName );
+                return fileText;
+              }.bind(this)
+            }
+          );
+
+          this.fs.copy(
+            this.templatePath(source + "e2e/pages/home.page.ts.ejs"), this.destinationPath("tests/e2e/pages/home.page.ts")
+          );
+
+          this.fs.copy(
+            this.templatePath(source + "e2e/wdio.conf.js.ejs"), this.destinationPath("tests/e2e/wdio.conf.js")
+          );
+
+          this.fs.copy(
+            this.templatePath(source + "e2e/tsconfig.json"), this.destinationPath("tests/e2e/tsconfig.json")
+          );
+
+          this.fs.copy(
+            this.templatePath(source + "e2e/wdio-typing/WidgetName.d.ts.ejs"),
+            this.destinationPath("typings/" + this.widget.widgetName + ".d.ts")
+          );
+
+          // .travis
+          this.fs.copy(this.templatePath(".travis.yml"), this.destinationPath(".travis.yml"),
+            {
+              process: function (file) {
+                let fileText = file.toString();
+                fileText = fileText
+                  .replace(/packageName/g, this.widget.packageName)
+                return fileText;
+              }.bind(this)
+            }
+          );
+        }
       }
 
       // Rename references package.xml
       this.fs.copy(
-        this.templatePath(boilerPlatePath + 'src/package.xml'),
-        this.destinationPath('src/package.xml'),
+        this.templatePath(source + "src/package.xml"), this.destinationPath("src/package.xml"),
         {
           process: function (file) {
             let fileText = file.toString();
             fileText = fileText
-                          .replace(/WidgetName/g, this.widget.widgetName)
-                          .replace(/\{\{version\}\}/g, this.widget.version);
-            return fileText;
-          }.bind(this)
-        }
-      );
-
-      // Rename references WidgetName
-      this.fs.copy(
-        this.templatePath(source + 'src/WidgetName/WidgetName.xml'),
-        this.destinationPath('src/' + this.widget.widgetName + '/' + this.widget.widgetName + '.xml'),
-        {
-          process: function (file) {
-            let fileText = file.toString();
-            fileText = fileText
-                          .replace(/WidgetName\.widget\.WidgetName/g, this.widget.packageName + '.widget.' + this.widget.widgetName)
-                          .replace(/WidgetName/g, this.widget.widgetName);
+              .replace(/WidgetName/g, this.widget.widgetName)
+              .replace(/packageName/g, this.widget.packageName)
+              .replace(/\{\{version\}\}/g, this.widget.version);
             return fileText;
           }.bind(this)
         }
@@ -234,46 +314,60 @@ module.exports = class extends Generator {
     }
 
     // Gitignore
-    this.fs.copy(this.templatePath('_gitignore'), this.destinationPath('.gitignore'));
-
-    // jshint
-    this.fs.copy(this.templatePath('_jshintrc'), this.destinationPath('.jshintrc'));
+    this.fs.copy(this.templatePath("_gitignore"), this.destinationPath(".gitignore"));
+    // tslint
+    this.fs.copy(this.templatePath("tslint.json"), this.destinationPath("tslint.json"));
+    // karma
+    this.fs.copy(this.templatePath("karma.conf.js"), this.destinationPath("karma.conf.js"));
+    // git attribute
+    this.fs.copy(this.templatePath(".gitattributes"), this.destinationPath(".gitattributes"));
+    // tsconfig
+    this.fs.copy(this.templatePath("_tsconfig.json"), this.destinationPath("tsconfig.json"),
+      {
+        process: function (file) {
+          var fileText = file.toString();
+          if (this.props.boilerplate === "empty") {
+            fileText = fileText
+              .replace(/"mendix-client", /g, "")
+              .replace(/"jasmine", /g, "")
+              .replace(/"core-js"/g, "");
+          } else if (!this.widget.unitTests | !this.widget.e2eTests) {
+            fileText = fileText
+              .replace(/"jasmine", /g, "");
+          }
+          return fileText;
+        }.bind(this)
+      }
+    );
+    // webpack
+    this.fs.copy(this.templatePath("webpack.config.js"), this.destinationPath("webpack.config.js"));
 
     // Package.JSON
-    try { extfs.removeSync(this.destinationPath('package.json')); } catch (e) {}
+    try {
+      extfs.removeSync(this.destinationPath("package.json"));
+    } catch (e) { }
 
-    console.log()
-    this.fs.copyTpl(
-      this.templatePath('_package.json'),
-      this.destinationPath('package.json'),
-      this.widget, {}
-    );
+    const packageSourcePath = this.props.boilerplate === "empty" ? emptyBoilerplatePath + "package.json" : "_package.json";
 
-    // Add Gulp/Grunt
+    this.fs.copyTpl(this.templatePath(packageSourcePath), this.destinationPath("package.json"), this.widget, {});
+
+    // Add Gulp/Grunt/tsconfig/tslint/webpack/karma
     this.pkg = pkg;
 
-    try { extfs.removeSync(this.destinationPath('Gruntfile.js')); } catch (e) {}
-    try { extfs.removeSync(this.destinationPath('Gulpfile.js')); } catch (e) {}
+    try { extfs.removeSync(this.destinationPath("Gruntfile.js")); } catch (e) { }
+    try { extfs.removeSync(this.destinationPath("Gulpfile.js")); } catch (e) { }
+    try { extfs.removeSync(this.destinationPath("tsconfig.json")); } catch (e) { }
+    try { extfs.removeSync(this.destinationPath("tslint.json")); } catch (e) { }
+    try { extfs.removeSync(this.destinationPath("karma.conf.js")); } catch (e) { }
+    try { extfs.removeSync(this.destinationPath("webpack.config.js")); } catch (e) { }
 
-    if (this.widget.builder === 'gulp') {
-      this.fs.copyTpl(
-        this.templatePath('Gulpfile.js'),
-        this.destinationPath('Gulpfile.js'),
-        this, {}
-      );
+    if (this.widget.builder === "gulp") {
+      this.fs.copyTpl(this.templatePath("Gulpfile.js"), this.destinationPath("Gulpfile.js"), this, {});
     } else {
-      this.fs.copyTpl(
-        this.templatePath('Gruntfile.js'),
-        this.destinationPath('Gruntfile.js'),
-        this,
-        {}
-      );
+      this.fs.copyTpl(this.templatePath("Gruntfile.js"), this.destinationPath("Gruntfile.js"), this, {});
     }
 
-    this.fs.copy(
-      this.templatePath('editorconfig'),
-      this.destinationPath('.editorconfig')
-    );
+    this.fs.copy(this.templatePath("editorconfig"), this.destinationPath(".editorconfig"));
   }
 
   install() {
@@ -292,7 +386,7 @@ module.exports = class extends Generator {
       this.log(text.END_NPM_NEED_INSTALL_MSG);
     } else {
       this.log(text.END_RUN_BUILD_MSG);
-      this.spawnCommand('npm', ['run', 'build']);
+      this.spawnCommand("npm", [ "run", "build" ]);
     }
   }
 };

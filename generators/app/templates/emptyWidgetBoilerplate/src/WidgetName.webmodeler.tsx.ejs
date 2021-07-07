@@ -1,0 +1,25 @@
+import * as React from "react";
+import { createElement } from 'react';
+
+import { WidgetNameContainerProps } from './components/WidgetNameContainer';
+import { Alert } from './components/Alert';
+import WidgetName, { WidgetNameProps } from './components/WidgetName';
+
+// tslint:disable-next-line class-name
+export class preview extends React.Component<WidgetNameContainerProps, {}> {
+    render() {
+
+        return (
+            <div>
+                <Alert bootstrapStyle="danger" className="widget-badge-alert" message={ "" } />,
+                    <WidgetName {...this.transformProps(this.props)} />
+            </div>
+        );
+    }
+
+    private transformProps(props: WidgetNameContainerProps): WidgetNameProps {
+        return {
+            sampleText: props.sampleText,
+        };
+    }
+}

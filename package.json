@@ -1,7 +1,7 @@
 {
-  "name": "generator-mendix",
+  "name": "generator-mendix-fob",
   "version": "2.2.3",
-  "description": "Mendix Widget generator",
+  "description": "Mendix Widget generator for FOB",
   "license": "MIT",
   "main": "app/index.js",
   "repository": {
@@ -30,16 +30,18 @@
     "url": "https://github.com/mendix/generator-mendix/issues"
   },
   "dependencies": {
-    "chalk": "^1.0.0",
+    "chalk": "^2.4.1",
+    "each-async": "^1.1.1",
     "extfs": "0.0.7",
+    "indent-string": "^3.2.0",
     "semver": "^5.3.0",
     "xml2js": "^0.4.17",
-    "yeoman-generator": "1.1.1"
+    "yeoman-generator": "^3.1.0"
   },
   "devDependencies": {
     "fs-extra": "2.1.2",
-    "lodash": "^4.17.4",
-    "mocha": "^3.2.0",
+    "lodash": "^4.17.10",
+    "mocha": "^5.2.0",
     "mock-spawn": "^0.2.6",
     "string-template": "1.0.0",
     "yeoman-assert": "^3.0.0",
