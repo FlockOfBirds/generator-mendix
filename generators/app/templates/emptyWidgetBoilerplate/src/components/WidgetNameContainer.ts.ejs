@@ -1,0 +1,14 @@
+import { Component, createElement } from "react";
+import WidgetName from "./WidgetName";
+
+export interface WidgetNameContainerProps {
+  sampleText: string;
+}
+
+export default class WidgetNameContainer extends Component<WidgetNameContainerProps, {}> {
+  render() {
+      return createElement(WidgetName, {
+          sampleText: this.props.sampleText
+      });
+  }
+}

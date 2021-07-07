@@ -1,0 +1,54 @@
+import { Component, createElement } from "react";
+import { Alert } from "./components/Alert";
+import { WidgetName, WidgetNameProps } from "./components/WidgetName";
+import WidgetNameContainer, { WidgetNameContainerProps } from "./components/WidgetNameContainer";
+
+declare function require(name: string): string;
+
+type VisibilityMap = {
+    [ P in keyof WidgetNameContainerProps ]: boolean;
+};
+
+// tslint:disable-next-line class-name
+export class preview extends Component<WidgetNameContainerProps, {}> {
+    render() {
+        const message = WidgetNameContainer.validateProps(this.props);
+        return createElement("div", { ref: this.parentInline },
+            createElement(Alert, { bootstrapStyle: "danger", message, className: "widget-WidgetName-alert" }),
+            createElement(WidgetName, this.transformProps(this.props))
+        );
+    }
+
+    private parentInline(node?: HTMLElement | null) {
+        // Temporary fix, the web modeler add a containing div, to render inline we need to change it.
+        if (node && node.parentElement) {
+            node.parentElement.style.display = "inline-block";
+        }
+    }
+
+    private transformProps(props: WidgetNameContainerProps): WidgetNameProps {
+        const valueAttribute = props.valueAttribute ? props.valueAttribute.split(".")[ 2 ] : "";
+        return {
+            packageNameType: props.packageNameType,
+            bootstrapStyle: props.bootstrapStyle,
+            className: props.class,
+            clickable: false,
+            style: WidgetNameContainer.parseStyle(props.style),
+            value: valueAttribute ? "[ " + valueAttribute + " ]" : props.packageNameValue
+        };
+    }
+}
+
+export function getPreviewCss() {
+    return require("./ui/WidgetName.css");
+}
+
+export function getVisibleProperties(valueMap: WidgetNameContainerProps, visibilityMap: VisibilityMap) {
+
+    visibilityMap.microflow = valueMap.onClickEvent === "callMicroflow";
+    visibilityMap.nanoflow = valueMap.onClickEvent === "callNanoflow";
+    visibilityMap.page = valueMap.onClickEvent === "showPage";
+    visibilityMap.openPageAs = valueMap.onClickEvent === "showPage";
+
+    return visibilityMap;
+}
